@@ -43,21 +43,21 @@ if (empty($mysql_hostname)) {
 $mysql_username = DB_USER;
 if (empty($mysql_username)) {
   #$mysql_username = 'root';
-  $mysql_username = 'admin9QQDwEy';
+  $mysql_username = 'adminXZyb64C';
 }
 
 /*** mysql password ***/
 $mysql_port = DB_PORT;
 if (empty($mysql_port)) {
 #   $mysql_port = '3306';
-   $mysql_port = '58026';
+   $mysql_port = '53396';
 }
 
 /*** mysql password ***/
 $mysql_password = DB_PASS;
 if (empty($mysql_password)) {
    #$mysql_password = '';
-   $mysql_password = 'HE74ZUiuJXWl';
+   $mysql_password = 'Xt4t23b_gLSt';
 }
 
 /*** database name ***/
