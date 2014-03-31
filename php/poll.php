@@ -11,7 +11,7 @@ $urltype = $_GET['roletype'];
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -84,7 +84,7 @@ try {
    <!-- Begin: Poll Page -->
    <div data-theme="a" id="pagePoll" data-role="page" data-fullscreen="false"><section>
 
-      <script> writeHeader("backhome", "settings"); </script>
+      <script> writeHeader("backsettings", "home"); </script>
 
 
          <div data-role="content">
@@ -112,24 +112,18 @@ try {
                ?>
                   <li data-name="<?php echo "poll".$pollid; ?>" data-inset="true" >                       
                      <a href="#popupPoll" data-rel="popup" data-position-to="window" data-transition="pop">
-                     <div class="ui-grid-b">     
-                        <div class="ui-block-a" style="font-weight:normal; width:20%; !important;">
                            <img src="images/poll.png"  style="width: 40px; height: 40px;" title="user" alt="user" class="ui-li-thumb">
-                        </div>
-                        <div class="ui-block-b" style="font-weight:normal; width:50%;!important;">                         
-                           <?php echo $pollid.". ".$pollname." (".$internalstr.")"; ?>
-                        </div>
-                        <div class="ui-block-b" style="font-weight:normal; width:80%; font-size:15px !important;">
+                           <div data-role="collapsible">
+                           <h4 style="font-size:11px;" class="ui-li-heading" > <?php echo $pollname.": ".$pollurl; ?> </h4>                        
+                           <p><?php echo $polldesc; ?> </p>
+                           </div>
                            <input readonly="true" type="hidden" id=<?php echo '"poll'.$pollid.'_pollid"';?> value=<?php echo '"'.$pollid.'"'; ?> >
                            <input readonly="true" type="hidden" id=<?php echo '"poll'.$pollid.'_pollname"';?> value=<?php echo '"'.$pollname.'"'; ?> >
                            <input readonly="true" type="hidden" id=<?php echo '"poll'.$pollid.'_polldesc"';?> value=<?php echo '"'.$polldesc.'"'; ?> >
                            <input readonly="true" type="hidden" id=<?php echo '"poll'.$pollid.'_qcount"';?> value=<?php echo '"'.$qcount.'"'; ?> >
                            <input readonly="true" type="hidden" id=<?php echo '"poll'.$pollid.'_isinternal"';?> value=<?php echo '"'.$isinternal.'"'; ?> >
                            <input readonly="true" type="hidden" id=<?php echo '"poll'.$pollid.'_pollurl"';?> value=<?php echo '"'.$pollurl.'"'; ?> >
-                           <?php echo $polldesc; ?> 
                            <input readonly="true" type="hidden" value=<?php echo '"'.$polldesc.'"'; ?> >
-                        </div>                        
-                     </div>
                      </a>
                   </li>                   
                <?php } ?>

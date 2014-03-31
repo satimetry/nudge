@@ -5,7 +5,7 @@ include('include/hit.php');
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -16,6 +16,8 @@ try {
          u.userid AS :userid,
          u.username AS :username,
          u.password AS :password,
+         u.age AS :age,
+         u.sex AS :sex,
          u.pushoveruser AS :pushoveruser,
          u.fitbitsecret AS :fitbitsecret,
          u.fitbitkey AS :fitbitkey,
@@ -32,10 +34,14 @@ try {
    $fitbitsecret = "";
    $fitbitkey = "";
    $fitbitappname = "";
+   $age = "";
+   $sex ="";
    
    $stmt -> bindParam(':userid', $userid, PDO::PARAM_STR);
    $stmt -> bindParam(':username', $username, PDO::PARAM_STR);
    $stmt -> bindParam(':password', $password, PDO::PARAM_STR);
+   $stmt -> bindParam(':age', $age, PDO::PARAM_STR);
+   $stmt -> bindParam(':sex', $sex, PDO::PARAM_STR);
    $stmt -> bindParam(':pushoveruser', $pushoveruser, PDO::PARAM_STR);
    $stmt -> bindParam(':fitbitsecret', $fitbitsecret, PDO::PARAM_STR);
    $stmt -> bindParam(':fitbitkey', $fitbitkey, PDO::PARAM_STR);
@@ -47,13 +53,15 @@ try {
    $userid = $row[0];
    $username = $row[1];
    $password = $row[2];
-   $pushoveruser = $row[3];
-   $fitbitsecret = $row[4];
-   $fitbitkey = $row[5];
-   $fitbitappname = $row[6]; 
+   $age = $row[3];
+   $sex = $row[4];
+   $pushoveruser = $row[5];
+   $fitbitsecret = $row[6];
+   $fitbitkey = $row[7];
+   $fitbitappname = $row[8]; 
                             
 } catch(Exception $e) {
-   $_SESSION['message'] = 'We are unable to process your request. Please try again later...'.$e;
+   $_SESSION['message'] = 'We are unable to process your request. Please try again later...mysql:host='.$mysql_hostname.';port='.$mysql_port.';dbname='.$mysql_dbname.', '.$mysql_username.' '.$mysql_password.' '.$e;
    header("Location: error.php");
 }
 ?>
@@ -92,7 +100,6 @@ try {
       <form id="register" action="user_submit.php" method="get"  rel="external" data-ajax="false"> 
          <div data-role="fieldcontain">
 
-
             <fieldset data-role="controlgroup">
             
             <legend>Account Details</legend>
@@ -106,14 +113,33 @@ try {
             <label for="password">Password:</label>            
             <input type="password" class="password" name="password" id="password" value="<?php echo $password; ?>" >
             </div>
-            
+
+            <div data-role="fieldcontain">
+            <label for="age">Age:</label>           
+            <input type="number" class="age" name="age" id="age" required value="<?php echo $age; ?>" data-mini="true">
+            </div>
+
+            <div data-role="fieldcontain">
+            <label for="sex">Sex:</label>                      
+            <div data-role="controlgroup">   
+              <select name="sex" id="sex" class="sex" data-mini="true" >
+                <?php if ( $sex == 0 ) { ?>
+                  <option value="0" selected="selected"> Male </option>
+                  <option value="1"> Female </option>
+                <?php } else { ?>
+                  <option value="0" > Male </option>
+                  <option value="1" selected="selected"> Female </option>
+                <?php } ?>                
+              </select>
+            </div>
+            </div>
+                                  
             <div data-role="fieldcontain">
             <label for="pushoveruser">pushover.net user:</label>
             <input style="font-size:15px;" type="text" class="pushoveruser" name="pushoveruser" placeholder="Optional" id="pushoveruser" 
                value="<?php echo $pushoveruser; ?>" > 
             </div>            
-
-                           
+                          
             <div data-role="fieldcontain">
             <label for="fitbitkey">Fitbit key:</label>            
             <input style="font-size:15px;" type="text" class="fitbitkey" name="fitbitkey" placeholder="Optional" id="fitbitkey" value="<?php echo $fitbitkey; ?>" >

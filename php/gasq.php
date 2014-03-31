@@ -20,7 +20,7 @@ if ( !isset($_GET['pollid']) && !isset($_GET['ruleid']) ) {
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -33,12 +33,14 @@ try {
       FROM poll p,
            rule r
       WHERE p.pollname = r.pollname
+       AND  p.programid = :programid
        AND  r.ruleid = :ruleid;
        ");      
       
       $pollid = ""; 
       $stmt->bindParam(':ruleid', $ruleid, PDO::PARAM_STR);  
       $stmt->bindParam(':pollid', $pollid, PDO::PARAM_STR);  
+      $stmt->bindParam(':programid', $programid, PDO::PARAM_STR);  
          
       $stmt->execute();
       $count = $stmt -> rowCount();
@@ -60,6 +62,7 @@ try {
            poll p,
            rule r
       WHERE pru.programid = :programid
+       AND  p.programid = :programid
        AND  pru.userid = :userid
        AND  p.pollid = :pollid
        AND  r.ruletype = 'gaslow'
@@ -122,7 +125,7 @@ try {
          AND  r.parentruleid = :ruleid
          AND  pru.ruleid = r.ruleid
          AND  pru.userid = :userid
-         AND  r.rulename LIKE 'gas%'
+         AND  r.rulename LIKE 'gas%';
          ORDER BY rulename DESC;
        ");
        
@@ -377,11 +380,22 @@ try {
             <fieldset data-role="controlgroup">
                <legend style="font-weight:bold;" class="legend" id="legend" name="legend"></legend>
 
-              <var style="font-size:11px;font-style:italic;" class="lastupdate" id="lastupdate" name="lastupdate"></var>
-              <br/>
-              <var style="text-align:left;" class="question" id="question" name="question"></var>
+               <var style="text-align:left;" class="question" id="question" name="question"></var>
+               <br/>
+               <var style="font-size:11px;font-style:normal;" class="lastupdate" id="lastupdate" name="lastupdate"></var>
+
+               <div data-role="fieldcontain">
+                  <label for="polldate">Date:</label>
+                  <input required type="date" name="polldate" id="polldate" value=<?php echo date('Y-m-d'); ?> style="text-align:center;" />
+               </div>
+
+               <div data-role="fieldcontain">
+                  <label for="polltime">Time:</label>
+                  <input required type="time" name="polltime" id="polltime" value=<?php putenv("TZ=Australia/Sydney"); echo date('H:i'); ?> style="text-align:center;" />
+               </div>
                 
                <div data-role="fieldcontain">              
+                  <label for="q01">Response:</label>
                   <fieldset data-role="controlgroup" data-mini="true">
                      <label class="optlabel1" data-inline="true" for="q011" id="optlabel1"> optlabel1 </label>  
                      <input type="radio" name="q01" id="q011" value="0" checked="checked" />
@@ -446,10 +460,14 @@ $('#next').click(function() {
       }
    }
    
+   polltime = document.getElementById('polltime').value;
+   polldate = document.getElementById('polldate').value;
+   polldatetime = polldate + ' ' + polltime + ':00';
 
    qtotalcount = pollqJSON[qidx].qtotalcount;
-   polldesc = '"' + pollqJSON[qidx].polldesc + '"';
+   polldesc = '"' + pollqJSON[qidx].polldesc + ' ' + pollqJSON[qidx].qtext + '"';
    pollname = '"' + pollqJSON[qidx].pollname + '"';
+   polldate = '"' + polldatetime + '"';
    
    responseJSON += "\"q01value\" : " + optvalue;
       
@@ -465,6 +483,7 @@ $('#next').click(function() {
    header += "\"pollname\" : " + pollname + ", ";
    header += "\"lastqseqno\" : " + qtotalcount + ", ";
    header += "\"qcount\" : " + qtotalcount + ", ";
+   header += "\"polldate\" : " + polldate + ", ";
                     
    responseJSON = header + responseJSON;
    responseJSON = "{ " + responseJSON + " }";
@@ -493,7 +512,7 @@ $( '#pageGasQ' ).on('pagebeforeshow', function(event) {
    qidx = 0;
    var legend = pollqJSON[qidx].polldesc;
    var qtext = pollqJSON[qidx].qtext;
-   var lastupdate = "Last updated: " + "<?php echo $lastobsdate; ?>";
+   var lastupdate = "Last updated: " + "<?php echo $lastpolldate; ?>";
 
    $('.lastupdate').empty();   
    $('.lastupdate').append(lastupdate);   

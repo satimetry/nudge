@@ -12,10 +12,10 @@ $ruleid = $_GET['ruleid'];
 $rulevalue = $_GET['rulevalue'];
 
 $ruletype = $_GET['ruletype'];
-
+  
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -37,11 +37,11 @@ try {
    	$stmt -> bindParam(':programid', $programid, PDO::PARAM_STR, 40);
    	$stmt -> bindParam(':ruleid', $ruleid, PDO::PARAM_STR, 40);
    	$stmt -> bindParam(':rulevalue', $rulevalue, PDO::PARAM_STR, 40);
-   
+
    	/*** execute the prepared statement ***/
    	$stmt -> execute();
       if ( strpos($ruletype, 'gas') !== false ) {
-        header( "Location: programruleuser.php?ruletype='gas'" );
+        header( "Location: programgoal.php?ruletype=gashigh" );
       } else {
         header( 'Location: programruleuser.php?ruletype='.$ruletype );       
       }	 
@@ -74,9 +74,9 @@ try {
    	   
    	/*** execute the prepared statement ***/
    	$stmt -> execute();
-      
-      if ( strpos($ruletype, 'gas') !== false ) {
-   	  header( "Location: programruleuser.php?ruletype='gas'" );
+ 
+    if ( strpos($ruletype, 'gas') !== false ) {
+   	  header( "Location: programgoal.php?ruletype=gashigh" );
 		} else {
 		  header( 'Location: programruleuser.php?ruletype='.$ruletype );   	  
 		}

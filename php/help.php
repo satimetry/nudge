@@ -32,13 +32,13 @@
    <div data-role="content">
       <div class="content-primary" id="Settings">
          <ul data-role="listview"  id="SettingsList" data-icon="arrow-r" data-inset="true" >
-            <li data-role="divider"> <h4>Help </h4> </li>
+            <li data-role="divider"> <h4>Help Menu </h4> </li>
             <li> <a href="#pageAbout">About</a> </li>
+            <li> <a href="#pageDocs" >Docs<span class="ui-li-count"> 3 </span></a> </li>
+            <li> <a href="#pageFAQ">FAQ</a> </li>
             <li> <a href="#pageIntro">Example</a> </li>
             <li> <a href="#pageDemo">Demonstration</a> </li>
             <li> <a href="#pageStoryBoard">Story Board </a> </li>
-            <li> <a href="#pageGAS">Goals </a> </li>
-            <li> <a href="#pageTerms">Terminology </a> </li>
             <li> <a href="#pageGlossary">Glossary </a> </li>
             <li> <a href="#pageAccount">Integration </a> </li>
          </ul>
@@ -49,6 +49,50 @@
 
 </section></div>
 <!-- End: Help section -->
+
+<!-- Begin: Docs page -->
+<div data-theme="a" id="pageDocs" data-role="page" data-fullscreen="false" ><section>
+   
+   <script> writeHeader("backhelp", "home")</script>
+
+   <div data-role="content">
+      <div class="content-primary" id="Settings">
+         <ul data-role="listview"  id="SettingsList" data-icon="arrow-r" data-inset="true" >
+            <li data-role="divider"> <h4>Docs </h4> </li>
+            <li> <a href="docs/Coachee-GettingStartedGuide.pdf" download="Coachee-GettingStartedGuide.pdf" data-ajax="false" >Coachee</a> </li>
+            <li> <a href="docs/Coach-GettingStartedGuide.pdf" download="Coach-GettingStartedGuide.pdf" data-ajax="false" >Coach</a> </li>
+            <li> <a href="docs/TheNudgeMachine.pdf" download="TheNudgeMachine.pdf" data-ajax="false" >Presentation</a> </li>
+         </ul>
+      </div>
+   </div>
+   
+   <script> writeFooter(); </script>
+
+</section></div>
+<!-- End: Docs section -->
+
+<!-- Begin: Glossary page -->
+<div data-theme="a" id="pageGlossary" data-role="page" data-fullscreen="false" ><section>
+   
+   <script> writeHeader("backhelp", "home")</script>
+
+   <div data-role="content">
+      <div class="content-primary" id="Settings">
+         <ul data-role="listview"  id="SettingsList" data-icon="arrow-r" data-inset="true" >
+            <li data-role="divider"> <h4>Glossary </h4> </li>
+            <li> <a href="#pageTerms">System Terminology </a> </li>
+            <li> <a href="#pageABA">Applied Behavioral Analysis </a> </li>
+            <li> <a href="#pageGAS">Goal Attainment Scaling </a> </li>
+            <li> <a href="#pageBehavEco">Behavioral Economics </a> </li>
+         </ul>
+      </div>
+   </div>
+   
+   <script> writeFooter(); </script>
+
+</section></div>
+<!-- End: Glossary section -->
+
 
 <!-- Begin: About Page -->
 <div data-theme="a" id="pageAbout" data-role="page"><section>
@@ -314,7 +358,7 @@ As the <b>Participant</b> you can now choose to opt-out/in of that rule.
 </section></div>
 <!-- End: StoryBoard Page -->
 
-<!-- Begin: Terminology Page -->
+<!-- Begin: GAS Page -->
 <div data-theme="a" id="pageGAS" data-role="page"><section>
    
    <script>writeHeader("backhelp", "home")</script>
@@ -460,7 +504,7 @@ A timetable for future evaluations should also be agreed at this point          
 </section></div>
 <!-- End: GAS Page -->
 
-<!-- Begin: Terminology Page -->
+<!-- Begin: Terms Page -->
 <div data-theme="a" id="pageTerms" data-role="page"><section>
    
    <script>writeHeader("backhelp", "home")</script>
@@ -581,8 +625,8 @@ e.g. in an ecological momentary assessment context, this could be a prompt to co
 <!-- End: Terms Page -->
             
             
-<!-- Begin: Glossary Page -->
-<div data-theme="a" id="pageGlossary" data-role="page"><section>
+<!-- Begin: BehavEco Page -->
+<div data-theme="a" id="pageBehavEco" data-role="page"><section>
    
    <script>writeHeader("backhelp", "home")</script>
       
@@ -590,7 +634,7 @@ e.g. in an ecological momentary assessment context, this could be a prompt to co
       <div class="content-primary" id="ProgramRuleUser">
          <ul data-role="listview" data-filter="true" id="ProgramRuleUserList" data-icon="arrow-r" data-inset="true" >
             <li data-role="divider">
-               Glossary 
+               Behavioral Economics
             </li>
 
             <li>
@@ -750,7 +794,342 @@ boundedly rational individuals while imposing little or no harm on rational indi
    <script> writeFooter(); </script>
          
 </section></div>
-<!-- End: Glossary Page -->
+<!-- End: BehavEco Page -->
+
+<!-- Begin: ABA Page -->
+<div data-theme="a" id="pageABA" data-role="page"><section>
+   
+   <script>writeHeader("backhelp", "home")</script>
+      
+   <div data-role="content">
+      <div class="content-primary" id="ProgramRuleUser">
+         <ul data-role="listview" data-filter="true" id="ProgramRuleUserList" data-icon="arrow-r" data-inset="true" >
+            <li data-role="divider">
+               Applied Behavioral Analysis
+            </li>
+
+
+<li> 
+<div data-role="collapsible">
+<h4> Applied Behavioral Analysis </h4>
+<p><div style="white-space:normal;">
+
+Behavior analysis is concerned with understanding how environmental events change behavior, 
+applied behavior analysis is concerned with using environmental events to change behvior in desirable ways.
+<a href=http://www.amazon.com/First-Course-Applied-Behavior-Analysis/dp/1577664728/ref=sr_1_5?s=books&ie=UTF8&qid=1355114845&sr=1-5&keywords=applied+behaviour+analysis>Chance (2006)</a>
+
+</div></p> 
+</div> 
+</li>
+
+
+<li> 
+<div data-role="collapsible">
+<h4> Radical Behaviorism </h4>
+<p><div style="white-space:normal;">
+
+Radical behaviorism considers everything an organism does as behavior, wherver it be "public" behavior observable by others or
+"private" behavioral events such as thinking and feeling that can only be directly observed by the person doing it. 
+
+</div></p> 
+</div> 
+</li>
+
+<li> 
+<div data-role="collapsible">
+<h4> Functional Contextualism </h4>
+<p><div style="white-space:normal;">
+
+A particular philosophy of science that emphasizes two essential elements in radical behaviorism: 
+The first is that behavior must always be understood in relation to the setting, or context, in which it takes place. 
+The second is that in order to understand and influence behavior, we need to study its function- that is, what it is aimed at.
+<a href=http://relationalframetheory.wikispaces.com/Functional+Contextualism>relationalframetheory</a>
+<br/>
+Functional contextualists seek to predict-and-influence psychological events with precision, scope and depth.
+This approach reveals a strong adherence to contextualism's extremely practical truth criterion and can be likened to the enterprise of science or engineering, 
+in which general rules and principles are used to predict and influence events. 
+Rules or theories that do not contribute to the achievement of one's practical goals are ignored or rejected.   
+<a href=http://contextualscience.org/truth_criterion>wiki</a>
+
+</div></p> 
+</div> 
+</li>
+
+<li> 
+<div data-role="collapsible">
+<h4> Pragmatic Truth Criterion </h4>
+<p><div style="white-space:normal;">
+
+For contextualists the truth and meaning of an idea lies in its function or utility, not in how well it is said to mirror reality. 
+The truth criterion of contextualism is thus dubbed successful working, 
+whereby an analysis is said to be true or valid insofar as it leads to effective action, or achievement of some goal.  
+<a href=http://contextualscience.org/truth_criterion>contextualscience</a>
+
+</div></p> 
+</div> 
+</li>
+
+
+
+
+
+            
+            
+         </ul>
+   </div>
+   
+   <script> writeFooter(); </script>
+         
+</section></div>
+<!-- End: ABA Page -->
+
+
+<!-- Begin: FAQ Page -->
+<div data-theme="a" id="pageFAQ" data-role="page"><section>
+   
+   <script>writeHeader("backhelp", "home")</script>
+      
+   <div data-role="content">
+      <div class="content-primary" id="Terms">
+         <ul data-role="listview" data-filter="true" id="TermsList" data-icon="arrow-r" data-inset="true" >
+            <li data-role="divider">
+               Frequently Asked Questions
+            </li>
+
+            <li>
+               <div data-role="collapsible">
+<h5>
+How to enrol
+</h5>
+
+<p>
+<div style="white-space:normal;">
+First time users need to enrol in order to use this system. 
+The enrolment function is located in the Settings Menu located at http://www.thenudgemachine.com/settings.php
+Then select the Enrol menu option at http://www.thenudgemachine.com/register.php and complete the form.
+The system just requires a unique string as username, e.g. your University ID "u1234567" and a password.
+Ensure that you select the correct program as advised by your coach.
+</div>
+</p>
+
+               </div>
+            </li>
+
+            <li>
+               <div data-role="collapsible">
+<h5>
+How to login
+</h5>
+
+<p>
+<div  style="white-space:normal;">
+Once enrolled, users can login to the system.
+The login function is located in the Home Menu located at http://www.thenudgemachine.com/nudge/php/index.php
+Then select the Login menu option at http://www.thenudgemachine.com/login.php and complete the form.
+Ensure that you select the same program as you entered at enrolment time.
+</div>
+</p>
+
+               </div>
+            </li>
+
+            <li>
+               <div data-role="collapsible">
+<h5>
+How to configure goals
+</h5>
+
+<p>
+<div  style="white-space:normal;">
+The goal configuration function is located in the Settings Menu located at http://www.thenudgemachine.com/settings.php
+Then select the Goals menu option at http://www.thenudgemachine.com/programgoal.php?ruletype=gashigh
+Goals follow the goal attainment scale (GAS) model and so form a 3-level hierarchy represented as higher order goals
+then lower order goals then the final 5 category GAS scale itself.
+You can navigate down the goal hierarchy be clicking the goal item itself. You configure a goal at a specific level
+by clicking the "gear" configuration icon located on the right most side of the goal item. Once you click the configuration icon
+you can edit the goal description for the higher and lower order goals. For the 5 GAS goals you also enter a high and low target 
+that represents the thresholds for goals attainment at that level. Ensure that the low and high targets across the 5 GAS goals
+completely cover the range of outcomes but do not overlap.
+</div>
+</p>
+
+               </div>
+            </li>
+
+            <li>
+               <div data-role="collapsible">
+<h5>
+How to record goals
+</h5>
+
+<p>
+<div  style="white-space:normal;">
+The goal self-report recording function is located in the Home Menu located at http://www.thenudgemachine.com/index.php
+Then select the Goals menu option at http://www.thenudgemachine.com/goal.php?ruletype=gaslow
+You can then self-report on your goal attainment by clicking the "r-arrow" icon located on the right most side of the goal item.
+The page will tell you the last time you self-reported your goasl attainment and also allows you to enter in the data and time
+which is otherwise defaulted to 'now'. Please ensure that the Date, Time and Response are all completed then click submit to record your result. 
+</div>
+</p>
+
+               </div>
+            </li>
+
+            <li>
+               <div data-role="collapsible">
+<h5>
+How to verify goal was recorded
+</h5>
+
+<p>
+<div  style="white-space:normal;">
+System and user entered events are persisted as "observations" in this system and can be inspected. 
+A GAS goal self-report event is one such example.
+The data observation function is located in the Home Menu located at http://www.thenudgemachine.com/index.php
+Then select the Data menu option at: http://www.thenudgemachine.com/index.php#pageDataEntry and then Observations at: http://www.thenudgemachine.com/userobs.php
+You will now see the last 20 observations tagged with a timestamp and description.
+</div>
+</p>
+
+               </div>
+            </li>
+
+            <li>
+               <div data-role="collapsible">
+<h5>
+How to record an observation
+</h5>
+
+<p>
+<div  style="white-space:normal;">
+Users can self-report observations using the data observation function.
+This is located in the Home Menu located at http://www.thenudgemachine.com/index.php
+Then select the Data menu option at: http://www.thenudgemachine.com/index.php#pageDataEntry and then Observations at: http://www.thenudgemachine.com/userobs.php
+You will now see the last 20 observations tagged with a timestamp and description. Now click the "plus" icon on the right side on the page header.
+Complete thr form to record your observation then press Add.
+</div>
+</p>
+
+               </div>
+            </li>
+
+            <li>
+               <div data-role="collapsible">
+<h5>
+How to record a journal
+</h5>
+
+<p>
+<div  style="white-space:normal;">
+Users can record a journal or diary entry using the data diary function.
+This is located in the Home Menu located at http://www.thenudgemachine.com/index.php
+Then select the Data menu option at: http://www.thenudgemachine.com/index.php#pageDataEntry and then Diary at: http://www.thenudgemachine.com/userdiary.php
+You will now see the last 20 diary entries tagged with a timestamp and description. Now click the "plus" icon on the right side on the page header.
+Complete thr form to record your diary entry then press Add.
+</div>
+</p>
+
+               </div>
+            </li>
+
+            <li>
+               <div data-role="collapsible">
+<h5>
+What are charts
+</h5>
+
+<p>
+<div  style="white-space:normal;">
+The system creates graphs and charts which are updated on a regular basis for each program.
+This is located in the Home Menu located at http://www.thenudgemachine.com/index.php
+Then select the Charts menu option at: http://www.thenudgemachine.com/index.php#pageCharts
+Various submenus then direct your to User, Group or Program wide charts.
+</div>
+</p>
+
+               </div>
+            </li>
+
+            <li>
+               <div data-role="collapsible">
+<h5>
+What are nudges
+</h5>
+
+<p>
+<div  style="white-space:normal;">
+The Coach may choose to nudge/prompt/reminder Coachees during the course of the program.
+These notifications are located in the Home Menu located at http://www.thenudgemachine.com/index.php
+Then select the Nudges menu option at: http://www.thenudgemachine.com/msg.php
+When you click on a nudge the unread count will be reduced and popup will appear with the full nudge text message
+including a Go-To_Site button, as e.g. some notifications may be to prompt you to complete a poll.
+</div>
+</p>
+
+               </div>
+            </li>
+
+            <li>
+               <div data-role="collapsible">
+<h5>
+How to nudge
+</h5>
+
+<p>
+<div  style="white-space:normal;">
+Coaches can nudge all or an individual coachee.
+This function is located in the Home Menu at http://www.thenudgemachine.com/index.php
+Then select the Coachees menu option at: http://www.thenudgemachine.com/programuser.php?roletype=participant
+To nudge a specific coachee, click the coachee of interest, a popup will appear then click the Nudge button.
+A form will now appear in which the Coach can enter a message and optionally a pointer to a resource of interest.
+This can be a pointer to a Link or to complete a Poll. 
+Record a standard Link style resource by giving it some short name in the "URL Label:" field 
+and then entering in the full URL in the "URL:" field.
+To issue a nudge to complete a spot Poll, you would instead selecte Poll as your Resource "Type:". 
+The "URL Label:" can be anything you like, e.g. "Sleep Spot Poll", however "URL:" field entry should be something
+like "pollq.php?pollid=1"  The "pollid=" part should reflect the ID number of the Poll you want to nudge.
+This number can be found by visiting the Polls Manue clocated under the Config Menu at: http://www.thenudgemachine.com/poll.php?roletype=architect
+Upon selecting the Polls menu you will see a list of polls each with their URL string.
+To nudge all coaches, instead of selecting a specific Coachee, click the "plus" icon at the right hand side of the page footer.
+The rest of the instructions are as before.
+</div>
+</p>
+
+               </div>
+            </li>
+            <li>
+               <div data-role="collapsible">
+<h5>
+How to create a resource
+</h5>
+
+<p>
+<div  style="white-space:normal;">
+Coaches can create links to resources and content.
+This function is located in the Home Menu at http://www.thenudgemachine.com/index.php
+Then select the Resources menu option at: http://www.thenudgemachine.com/index.php#pageResources
+Then select the Link menu at: http://www.thenudgemachine.com/programurl.php?urltype=link
+To add a link to a new resource, click the "add" icon at the right side of the page header.
+A form will now appear in which the Coach can enter the resource details.
+The "Label:" can be anything you like, e.g. "Meditation Web Page".
+The "URL:" field entry should be the URL link to the resource just as you would enter in a browser, e.g.
+http://www.smh.com.au"
+Leave the "URL icon:" field as per the default entry.
+</div>
+</p>
+
+               </div>
+            </li>                                    
+         </ul>
+         
+         
+   </div>
+   
+   <script> writeFooter(); </script>
+         
+</section></div>
+<!-- End: FAQ Page -->
+
 
  </body>
  

@@ -4,8 +4,8 @@ include("include/session.php");
 include('include/hit.php');
 
 if (!isset($_GET['urltype'])) {
-   $message = 'You must select a urltype to access this page';
-   header('Location: index.php');
+   $_SESSION['message'] = 'You must select a urltype to access this page';
+   header("Location: error.php");
 }
 $urltype = $_GET['urltype'];
 
@@ -19,7 +19,7 @@ if ( isset($_GET['roletype']) ) {
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -41,7 +41,8 @@ try {
          userid AS :userid,
          username AS :username,
          urldate AS :urldate,
-         ruleid AS :ruleid
+         ruleid AS :ruleid,
+         urltype AS :urltype
          FROM (
          SELECT
          purl.programurlid AS programurlid,
@@ -51,7 +52,8 @@ try {
          u.userid AS userid,
          u.username AS username,
          purl.urldate AS urldate,
-         purl.ruleid AS ruleid
+         purl.ruleid AS ruleid,
+         purl.urltype AS urltype
          FROM 
          programurl purl, 
          programuser pu,
@@ -75,7 +77,8 @@ try {
          userid AS :userid,
          username AS :username,
          urldate AS :urldate,
-         ruleid AS :ruleid    
+         ruleid AS :ruleid,
+         urltype AS :urltype    
          FROM (
          SELECT
          purl.programurlid AS programurlid,
@@ -85,7 +88,8 @@ try {
          u.userid AS userid,
          u.username AS username,
          purl.urldate AS urldate,
-         purl.ruleid AS ruleid 
+         purl.ruleid AS ruleid,
+         purl.urltype AS urltype
          FROM 
          programurl purl, 
          programuser pu,
@@ -99,6 +103,7 @@ try {
          AND  pr.programid = pru.programid
          AND  pu.programid = :programid
          AND  pru.programid = :programid
+         AND  p.programid = :programid
          AND  u.userid = :userid
          AND  u.userid = pu.userid
          AND  pu.roletype = 'participant'
@@ -118,7 +123,7 @@ try {
 
    } 
    
-   if ( $roletype == "architect" ) {
+   if ( $roletype != "participant" ) {
 
       if ($urltype == "user" ) {
        $stmt = $dbh -> prepare("
@@ -130,7 +135,8 @@ try {
          u.userid AS :userid,
          u.username AS :username,
          purl.urldate AS :urldate,
-         purl.ruleid AS :ruleid 
+         purl.ruleid AS :ruleid,
+         purl.urltype AS :urltype 
          FROM 
          programurl purl, 
          programuser pu,
@@ -155,7 +161,8 @@ try {
          u.userid AS :userid,
          u.username AS :username,
          purl.urldate AS :urldate,
-         purl.ruleid AS :ruleid
+         purl.ruleid AS :ruleid,
+         purl.urltype AS :urltype 
          FROM 
          programurl purl, 
          programuser pu,
@@ -181,7 +188,7 @@ try {
    $username = "";
    $urldate = "";
    $ruleid = "";
-   
+      
    $stmt -> bindParam(':programid', $programid, PDO::PARAM_STR);
    $stmt -> bindParam(':urltype', $urltype, PDO::PARAM_STR);
    $stmt -> bindParam(':urlname', $urlname, PDO::PARAM_STR);
@@ -191,7 +198,8 @@ try {
    $stmt -> bindParam(':urldesc', $urldesc, PDO::PARAM_STR);
    $stmt -> bindParam(':urldate', $urldate, PDO::PARAM_STR);
    $stmt -> bindParam(':ruleid', $ruleid, PDO::PARAM_STR);
-               
+   $stmt -> bindParam(':urltype', $urltype, PDO::PARAM_STR);
+                  
 //   $stmt -> execute();
 
 } catch(Exception $e) {
@@ -227,21 +235,17 @@ try {
    <body>
 
       <!-- Begin: Programurl Page -->
-      <div data-theme="a" id="index.php" data-role="page" data-fullscreen="false"><section>
-   <header data-role="header" data-position="fixed" data-add-back-btn="true">
-      <a href="index.php#pageurls" data-role="button" data-icon="back" data-iconpos="notext" rel="external">Back</a>
-      <p class=smallparagraph style="text-align:center; font-weight:bold; font-style:italic;">The Nudge Machine
-         <img style="width: 20px; height: 20px;" alt="Flying Cockateil" src="images/cockateil.png">
-      </p>   
-      <a href="#pageInsertURL"
-         data-transition="flip"
-         data-role="button"
-         data-icon="plus"
-         data-iconpos="notext"
-         data-ajax="false"
-         class="ui-btn-right">Home</a>
-         </header>
-
+    <div data-theme="a" id="pageProgramurl" data-role="page" data-fullscreen="false">
+      <section>
+ 
+        <?php 
+        if ( $roletype != 'participant' ) {       
+            echo "<script> writeHeader(\"backhome\", \"inserturl\") </script>";
+        } else {
+            echo "<script> writeHeader(\"backhome\", \"home\") </script>";
+        } 
+        ?>
+                   
          <div data-role="content">
             <div class="content-primary" id="Programurl">
                <ul data-role="listview" data-filter="true" id="ProgramurlList" data-icon="arrow-r" data-inset="true" >
@@ -260,6 +264,8 @@ try {
                   $username = $row[5];
                   $urldate = $rown[6];
                   $ruleid = $row[7];
+                  $urltype = $row[8];
+                  
                ?>
                   <?php if ($urltype == "user" && $roletype != "architect") { ?>
                      <?php $filename = "images/".$_SESSION['programname']."/user/".$username."/".$urlname.".png"; ?>
@@ -328,18 +334,18 @@ try {
                      
                   <?php if ($urltype == "link") { ?>
                      <?php $filename = "images/".$_SESSION['programname']."/link/".$urlname.".png"; ?>
-                     <?php if ( file_exists($filename) ) { ?>
-                        <li data-name=<?php echo "'programurl".$id."'"; ?> data-inset="true" >
-                           <input readonly="true" type="hidden" id="<?php echo 'programurl'.$id.'_urltype';?>" value=<?php echo '"'.$urltype.'"'; ?> >
+                     <?php if ( !file_exists($filename) ) {
+                       $filename = "images/html.png";
+                     } ?>
+                     <li data-name=<?php echo "'programurl".$id."'"; ?> data-inset="true" >
+                      <input readonly="true" type="hidden" id="<?php echo 'programurl'.$id.'_urltype';?>" value=<?php echo '"'.$urltype.'"'; ?> >
                        
-                       <a href="<?php echo $urldesc; ?>" title=<?php echo '"'.$urllabel.'"'; ?> data-ajax=FALSE rel="external">  
-                       <img src="<?php echo $filename; ?>"  title=<?php echo $urllabel; ?> alt="<?php echo $urllabel; ?>" class="ui-li-thumb">  
-                       <h4 class="ui-li-heading"> <?php echo $urllabel; ?> </h4> 
-                       <p> <?php echo $urldesc; ?> </p>
-                       </a>                        
-                        </li>    
-                                              
-                     <?php } ?>  
+                      <a href="<?php echo $urldesc; ?>" title=<?php echo '"'.$urllabel.'"'; ?> data-ajax=FALSE rel="external">  
+                      <img src="<?php echo $filename; ?>"  title=<?php echo $urllabel; ?> alt="<?php echo $urllabel; ?>" class="ui-li-thumb">  
+                      <h4 class="ui-li-heading"> <?php echo $urllabel; ?> </h4> 
+                      <p> <?php echo $urldesc; ?> </p>
+                      </a>                        
+                    </li>                            
                   <?php } ?>    
                                        
                   <?php if ($urltype == "poll") { ?>
@@ -360,9 +366,11 @@ try {
 
                   <?php if ($urltype == "tool") { ?>
                      <?php $filename = "images/".$_SESSION['programname']."/tool/".$urlname.".png"; ?>
-                     <?php if ( file_exists($filename) ) { ?>
-                        <li data-name=<?php echo "'programurl".$id."'"; ?> data-inset="true" >
-                           <input readonly="true" type="hidden" id="<?php echo 'programurl'.$id.'_urltype';?>" value=<?php echo '"'.$urltype.'"'; ?> >
+                     <?php if ( !file_exists($filename) ) {
+                       $filename = "images/html.png";
+                     } ?>
+                     <li data-name=<?php echo "'programurl".$id."'"; ?> data-inset="true" >
+                       <input readonly="true" type="hidden" id="<?php echo 'programurl'.$id.'_urltype';?>" value=<?php echo '"'.$urltype.'"'; ?> >
                         
                        <a href="<?php echo $urldesc; ?>" title=<?php echo '"'.$urllabel.'"'; ?> data-ajax=FALSE rel="external">  
                        <img src="images/<?php echo $_SESSION['programname']; ?>/tool/<?php echo $urlname; ?>.png" title=<?php echo $urllabel; ?> alt="<?php echo $urllabel; ?>" class="ui-li-thumb">  
@@ -370,8 +378,7 @@ try {
                        <p> <?php echo $urldesc; ?> </p>
                        </a>      
                                          
-                        </li>                          
-                     <?php } ?>  
+                    </li>                          
                   <?php } ?>    
                             
                <?php } ?>
@@ -379,9 +386,10 @@ try {
                </ul>
             </div>
 
-   <script> writeFooter(); </script>
+      <script> writeFooter(); </script>
 
-</section></div>
+    </section>
+  </div>
 <!-- End: Programurl Page -->
 
 <!-- Begin: InsertURL Page -->
@@ -394,18 +402,56 @@ try {
       <form id="url" action="programurl_submit.php" method="get"  rel="external" data-ajax="false"> 
          <div data-role="fieldcontain">
             
-            <h3>Link Entry</h3>
-
            <fieldset data-role="controlgroup">
-
+            
+            <legend>Resource</legend>
+            
             <div data-role="fieldcontain">
                <label for="urllabel">Label: </label>
                <input type="text" id="urllabel" name="urllabel" class="urllabel" placeholder="Short Description" >
             </div>
+
+            <div data-role="fieldcontain">
+            <label for="urltype">Type:</label>                      
+            <div data-role="controlgroup">   
+              <select name="urltype" id="urltype" class="urltype" data-mini="true" >
+                <?php if ( $urltype == "link" ) { ?>
+                  <option value="link" selected="selected"> Link </option>
+                  <option value="tool"> Tool </option>
+                  <option value="poll"> Poll </option>
+                <?php } else if ( $urltype == "poll" ) { ?>
+                  <option value="link" > Link </option>
+                  <option value="tool" > Tool </option>
+                  <option value="poll" selected="selected"> Poll </option>
+                <?php } else if ( $urltype == "tool" ) { ?>
+                  <option value="link" > Link </option>
+                  <option value="tool" selected="selected"> Tool </option>
+                  <option value="poll" > Poll </option>               
+                <?php } else if ( $urltype == "user" ) { ?>
+                  <option value="user" selected="selected"> User Chart </option>
+                  <option value="group" > Group Chart </option>               
+                  <option value="program" > Program Chart </option>                             
+                <?php } else if ( $urltype == "group" ) { ?>
+                  <option value="user" > User Chart </option>
+                  <option value="group" selected="selected"> Group Chart </option>               
+                  <option value="program" > Program Chart </option>               
+                <?php } else if ( $urltype == "program" ) { ?>
+                  <option value="user" > User Chart </option>
+                  <option value="group" > Group Chart </option>               
+                  <option value="program" selected="selected"> Program Chart </option>               
+                <?php } ?>   
+              </select>
+            </div>
+            </div>
+                        
+            <div data-role="fieldcontain">
+               <label for="urlname">URL icon: </label>
+               <input type="text" id="urlname" name="urlname" class="urlname" value="html" >
+            </div>
                                     
             <div data-role="fieldcontain">
                <label for="urldesc">URL: </label>
-               <input type="text" id="urldesc" name="urldesc" class="urldesc" placeholder="URL resource" >
+               <input type="text" id="urldesc" name="urldesc" class="urldesc" placeholder="http://contextualscience.org" >
             </div>
 
           </fieldset>
@@ -421,52 +467,38 @@ try {
    
    <script> writeFooter(); </script>
 
-<script>
-$('#url').submit(function() {
-   var username = $(".registerusername").val();
-//   var programname = $(this).find(":selected").val();
-   localStorage.setItem("username", username);
-//   localStorage.setItem("programname", programname);  
-   return true;
-});
-</script>
-
 </section>
 <!-- End: InsertURL Page -->
 
-
+</body>
+   
 <script>
+
+$( '#pageProgramurl' ).on('pagebeforeshow', function(event) {
+   localStorage.setItem("id", "");
+});
 
 $('#ProgramurlList li').click(function() {
    var id = $(this).attr('data-name');  
-   localStorage.setItem("programurlid", id);
-   urltype = document.getElementById(id + "_urltype").value;
-
-   <?php 
-      $rule = "link";
-      include("include/pointcount.php");
-   ?>
-   if ( urltype == "poll" ) {
-      
-   }
-   
+   localStorage.setItem("id", id);
 }); 
 
 
 $('#cancel').click(function() {
-   return false;
+   $.mobile.changePage("#pageProgramurl");
+   return true;
 });
 
 $( '#pageInsertURL' ).on('pagebeforeshow', function(event) {
-//   var id = localStorage.getItem("programurlid");
-//   var programid = document.getElementById(id + "_programid").value;
-//   alert(programid);
-//   $('.popupdiarytxtclass').empty();
-//   $('.popupdiarytxtclass').append(diarytxt);
+  var id = localStorage.getItem("id");
+  if ( id.length > 0 ) {
+    urltype = document.getElementById(id + "_urltype").value;
+  } else {
+    urltype = "<?php echo $urltype; ?>";
+  }
+  document.getElementById("urltype").value = urltype;
 });
+
 </script>
 
-   </body>
 </html>
-
-          

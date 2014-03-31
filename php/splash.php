@@ -13,7 +13,7 @@ if ( isset($_GET['roletype']) ) {
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -44,7 +44,8 @@ try {
          SELECT MAX(msgdate)
          FROM msg m2
          WHERE m2.programid = :programid
-          AND  m2.userid = :userid)
+          AND  m2.userid = :userid
+          AND  m2.isread = 0)
       ;");
 
    $msgid = "";
@@ -85,6 +86,19 @@ try {
    $mcount = $stmt->rowCount();
    if ($mcount == 0 ) {
       header("Location: index.php"); 
+   } else {
+      $stmt = $dbh -> prepare("
+        UPDATE msg SET isread = 1
+        WHERE msgid = :msgid;");
+
+      $stmt -> bindParam(':msgid', $id, PDO::PARAM_STR);
+      $stmt->execute();
+      $ucount = $stmt->rowCount();   
+      
+      if ( $ucount == 0 ) {
+        $_SESSION['message'] = 'msg isread not updated';
+        header("Location: error.php");
+      }     
    }
          
 } catch(Exception $e) {
@@ -121,38 +135,38 @@ try {
       <!-- Begin: Msgs Page -->
 <div data-theme="a" id="pageMsg" data-role="page" data-fullscreen="false" style="background:url(images/cockateil.png); repeat-x;" ><section>
 
-   <script> writeHeader("home", "msgs"); </script>
+  <script> writeHeader("home", "msgs"); </script>
 
-   <div data-role="content">
-      <div class="content-primary" id="Msg">
+  <div data-role="content">
+    <div class="content-primary" id="Msg">
 
-         <fieldset data-role="controlgroup">
+      <fieldset data-role="controlgroup">
 
-            <legend>Welcome <?php echo $username.' to the '.$programname.' program'; ?></legend>
+        <legend>Welcome <?php echo $username.' to the '.$programname.' program'; ?></legend>
             
-            <center>      
-            <div data-role="fieldcontain">
-               <p> 
-                  <?php 
-                     $msgdate2 = date_create_from_format('Y-m-d H:i:s', $msgdate);
-                     echo date_format($msgdate2,'l g:ia jS F Y'); 
-                  ?> 
-               </p>
-               <label for="textarea"></label>
-               <textarea style="text-align:left;" cols="40" rows="8" name="textarea" id="textarea" readonly><?php echo $msgtxt; ?></textarea>
+        <div data-role="fieldcontain">
+          <label for="textarea">
+            <?php 
+              $msgdate2 = date_create_from_format('Y-m-d H:i:s', $msgdate);
+              echo date_format($msgdate2,'l g:ia jS F Y'); 
+              ?> 
+            </label>
+            <div data-role="controlgroup">
+              <textarea style="text-align:left;" cols="40" rows="8" name="textarea" id="textarea" readonly><?php echo $msgtxt; ?></textarea>
             </div>
-            </center>
-         </fieldset>
+        </div>
+          
+      </fieldset>
 
-         <center>
-            <input type="button" id="cancel" name="msg_cancel" class="cancel" value="Close" data-inline="true">
-            <input type="button" id="url" name="url" class="url" value="Go to site ..." data-inline="true">
-         </center>
+      <center>
+        <input type="button" id="cancel" name="msg_cancel" class="cancel" value="Close" data-inline="true">
+        <input type="button" id="url" name="url" class="url" value="Go to site ..." data-inline="true">
+      </center>
                      
-      </div>
-   </div>
-         
-   <script> writeFooter(); </script>
+    </div>
+  </div>
+           
+  <script> writeFooter(); </script>
 </section></div>
 <!-- End: Msg Page -->
 

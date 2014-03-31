@@ -55,13 +55,21 @@ include('include/sessionlight.php');
                      <?php } ?>
                      
                      <li data-name="nudge">
-                        <a href="msg.php" data-ajax="false">Nudges <span class="ui-li-count">
-                           <var style="font-style:normal;" class="msgunreadcount"></var>
-                           </span></a>
+                        <script>
+                          var msgidlist = localStorage.getItem("msgidlist");
+                          if ( msgidlist != null ) {
+                            document.write("<a href=msg.php?msgidlist=" + msgidlist + " data-ajax=\"false\">");                      
+                          } else {
+                            document.write("<a href=\"msg.php\" data-ajax=\"false\">");                            
+                          }
+                        </script>
+                        Nudges <span class="ui-li-count">
+                        <var style="font-style:normal;" class="msgunreadcount"></var>
+                        </span></a>
                      </li>
                      <li>
-                        <a href="goal.php?ruletype=gashigh" data-ajax="false">Goals <span class="ui-li-count">
-                           3  
+                        <a href="goal.php?ruletype=gaslow" data-ajax="false">Goals <span class="ui-li-count">
+                           <var style="font-style:normal;" class="goalcount"></var>
                            </span></a>
                      </li>
                      <li>
@@ -155,9 +163,8 @@ include('include/sessionlight.php');
                      
                      <li>
                         <a href="programurl.php?urltype=tool" data-ajax="false">Tools <span class="ui-li-count">
-                           <script>
-                              document.write(program.toolcount);
-                           </script></span></a>
+                           <var style="font-style:normal;" class="toolcount"></var>
+                           </span></a>
                      </li>
 
                      <li>
@@ -192,7 +199,11 @@ include('include/sessionlight.php');
                   </li>
                   <li>
                      <a href="userobs.php" data-ajax="false">Observations </a>
-                     <img src="images/obs.png" alt="Diary" class="ui-li-thumb"> 
+                     <img src="images/obs.png" alt="Observation" class="ui-li-thumb"> 
+                  </li>
+                  <li>
+                     <a href="donudge.php" data-ajax="false">Nudge </a>
+                     <img src="images/cockateil.png" alt="DoNudge" class="ui-li-thumb"> 
                   </li>
                </ul>
             </div>
@@ -359,6 +370,14 @@ $('#pageHome').on('pagebeforeshow', function(event) {
       user.ruleoptincount = "<?php echo $_SESSION['ruleoptincount']; ?>";
    <?php } ?>
 
+   <?php if ( isset($_SESSION['toolcount']) ) { ?>
+      program.toolcount = "<?php echo $_SESSION['toolcount']; ?>";
+   <?php } ?>
+   $('.toolcount').empty();
+   if (program.toolcount != null) {
+      $('.toolcount').append(program.toolcount);
+   }
+      
    <?php if ( isset($_SESSION['msgunreadcount']) ) { ?>
       user.msgunreadcount = "<?php echo $_SESSION['msgunreadcount']; ?>";
    <?php } ?>
@@ -374,7 +393,15 @@ $('#pageHome').on('pagebeforeshow', function(event) {
    if (user.usercount != null ) {
       $('.usercount').append(user.usercount);
    }
-      
+
+   <?php if ( isset($_SESSION['goalcount']) ) { ?>
+      user.goalcount = "<?php echo $_SESSION['goalcount']; ?>";
+   <?php } ?>
+   $('.goalcount').empty();
+   if (user.goalcount != null ) {
+      $('.goalcount').append(user.goalcount);
+   }
+         
    <?php if ( isset($_SESSION['chartcount']) ) { ?>
             user.chartcount = "<?php echo $_SESSION['chartcount']; ?>";
    <?php } ?>
@@ -408,9 +435,9 @@ $('#pageHome').on('pagebeforeshow', function(event) {
 
    $('.welcome').empty();         
    if (programname != null) {
-      $('.welcome').append("Welcome to the " + programname + " program" );
+      $('.welcome').append("Home Menu - " + programname + " program" );
    } else {
-      $('.welcome').append("Please login or enrol");
+      $('.welcome').append("Home Menu - please login or enrol");
    }
          
 });

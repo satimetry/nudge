@@ -1,7 +1,7 @@
 <?php
 include('include/sessionlight.php');
-include('include/db.php');
-include('include/hit.php');
+#include('include/db.php');
+#include('include/hit.php');
 ?>
 
 <!doctype html>
@@ -38,14 +38,14 @@ include('include/hit.php');
    <div data-role="content">
       <div class="content-primary" id="Settings">
          <ul data-role="listview"  id="SettingsList" data-icon="arrow-r" data-inset="true" >
-            <li data-role="divider"> <h4>Settings </h4> </li>
-            <li> <a href="register.php" data-ajax="false">Enrol</a> </li>
+            <li data-role="divider"> <h4>Settings Menu</h4> </li>
+            <li> <a href="register.php" data-ajax="false">Enroll</a> </li>
             <li> <a href="user.php" data-ajax="false">Account </a> </li>
             <li> <a href="about.php" data-ajax="false">About </a> </li>
             <li> <a href="#popupLogout" data-rel="popup" data-position-to="window" data-transition="pop">Logout </a> </li>
                  
             <li>
-               <a href="programruleuser.php?ruletype=gas" data-ajax="false" >Goals </a>
+               <a href="programgoal.php?ruletype=gashigh" data-ajax="false" >Goals </a>
             </li>
     
             <?php if ( $_SESSION['roletype'] == "architect") { ?>             

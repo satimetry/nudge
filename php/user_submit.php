@@ -14,7 +14,7 @@ $fitbitappname = filter_var($_GET['fitbitappname'], FILTER_SANITIZE_STRING);
 //exit;
 
 try {
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    $dbh -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
    $stmt = $dbh -> prepare("

@@ -5,13 +5,16 @@ session_start();
 $username = filter_var($_GET['username'], FILTER_SANITIZE_STRING);
 $password = filter_var($_GET['password'], FILTER_SANITIZE_STRING);
 $roletype = filter_var($_GET['roletype'], FILTER_SANITIZE_STRING);
+$age = filter_var($_GET['age'], FILTER_SANITIZE_STRING);
+$sex = filter_var($_GET['sex'], FILTER_SANITIZE_STRING);
+
 $programid = filter_var($_GET['programid'], FILTER_SANITIZE_STRING);
 $programname = filter_var($_GET['programname'], FILTER_SANITIZE_STRING);
 
 include("include/db.php");
 
 try {
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    $dbh -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
    /*** prepare the select statement ***/
@@ -82,7 +85,6 @@ try {
       if ( $password != $password2) {
          $_SESSION['message'] = 'This username already exists. Choose a different username or check password.';
          header("Location: error.php");
-         exit;          
       }
    }
    
@@ -90,11 +92,14 @@ try {
    if ( $ucount == 0 ) {
       $stmt = $dbh -> prepare("
          INSERT INTO user 
-  	      (username, password)
+  	      (username, password, age, sex)
     	   VALUES 
-      	(:username, :password);");
+      	(:username, :password, :age, :sex);");
       $stmt -> bindParam(':username', $username, PDO::PARAM_STR);
       $stmt -> bindParam(':password', $password, PDO::PARAM_STR, 40);
+      $stmt -> bindParam(':age', $age, PDO::PARAM_STR);
+      $stmt -> bindParam(':sex', $sex, PDO::PARAM_STR);
+
       $stmt -> execute();
 
       $stmt = $dbh -> prepare("
@@ -118,7 +123,6 @@ try {
       if ( $ucount != 1 ) {   
          $_SESSION['message'] = 'No user inserted. Please try again later...';
          header("Location: error.php");
-         exit;        
       }
    }
 
@@ -126,8 +130,12 @@ try {
    $stmt = $dbh -> prepare("
       INSERT INTO programuser 
       (programid, userid, roletype)
-      VALUES 
-      (:programid, :userid, :roletype);");
+      SELECT 
+        programid, 
+        :userid, 
+        :roletype
+      FROM program
+      WHERE programid = :programid;");
 
    /*** bind the parameters ***/
    $stmt -> bindParam(':userid', $userid, PDO::PARAM_STR);
@@ -183,7 +191,6 @@ try {
 //      OK as maybe no rules yet      
 //      $_SESSION['message'] = 'No programruleuser inserted. Please try again later...';
 //      header("Location: error.php");
-      exit;  
    } 
    
    $rule = "login";

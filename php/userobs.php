@@ -5,7 +5,7 @@ include('include/hit.php');
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -137,10 +137,9 @@ try {
             
             <fieldset data-role="controlgroup">
             <legend>Observation Entry</legend>
-
-           <center>
-
-            <div date-role="fieldcontain">
+            
+            <div data-role="fieldcontain">
+            <label for="obsname">Type:</label>
             <div data-role="controlgroup">
               <select name="obsname" id="obsname" class="obsname"  data-mini="true">
                   <script> 
@@ -151,31 +150,39 @@ try {
                   </script>
                </select>
             </div>
-                    </div>
+            </div>
 
-            <div data-role="controlgroup">
-            <div date-role="fieldcontain">                    
-               <input type="date" name="obsdate" id="obsdate" value=<?php echo date('Y-m-d'); ?> style="text-align:center;" />
-               <input type="time" name="obstime" id="obstime" value=<?php putenv("TZ=Australia/Sydney"); echo date('H:i'); ?> style="text-align:center;" />
-            
-               <input type="text" name="obsvalue" id = "obsvalue" class="obsvalue" value=0 style="width:80%;text-align:center !important">
-
+            <div data-role="fieldcontain">
+            <label for="obsdesc">Description:</label>
                <input type="text" name="obsdesc" id="obsdesc" class="obsdesc" placeholder="Optional description" data-mini="true" >
             </div>
+
+            <div data-role="fieldcontain">
+            <label for="obsdate">Date:</label>
+               <input type="date" name="obsdate" id="obsdate" value=<?php echo date('Y-m-d'); ?> style="text-align:center;" />
             </div>
 
+            <div data-role="fieldcontain">
+            <label for="obstime">Time:</label>
+               <input type="time" name="obstime" id="obstime" value=<?php putenv("TZ=Australia/Sydney"); echo date('H:i'); ?> style="text-align:center;" />
+            </div>
 
-            </center>     
+            <div data-role="fieldcontain">
+            <label for="obsgps">GPS:</label>
+               <input type="text" name="obsgps" id = "obsgps" class="obsgps" value="" readonly >
+            </div>
+
+            <div data-role="fieldcontain">
+            <label for="obsvalue">Value:</label>
+               <input type="text" name="obsvalue" id = "obsvalue" class="obsvalue" value=0 style="width:80%;text-align:center !important">
+            </div>
+            
             </fieldset>
-         
-           </div>
-
-         
+                  
            <center>
               <input type="button" id="cancel" name="cancel" class="cancel" value="Cancel" data-inline="true">
               <input type="submit" name="insert" id="insert" value="Add" data-inline="true">
            </center>
-
 
          </div>
          </form>
@@ -216,14 +223,24 @@ $( '#popupDiaryTxt' ).on( 'popupbeforeposition',function(event){
 $( '.obsname' ).on('change', function () {
    var choice = document.getElementById("obsname").value;
    if (choice == "other") {
-      document.getElementById("obsdesc").placeholder = "Describe activity and metric";
+      document.getElementById("obsdesc").placeholder = "Describe activity and metric used";
    } else {
       document.getElementById("obsdesc").placeholder = "Optional description";
    }
 });
 
+
+
 $( '#pageInsertUserObs' ).on('pagebeforeshow', function(event) {
-//   document.getElementById("obsdesc").type = "hidden";
+  
+navigator.geolocation.getCurrentPosition (function (pos)
+{
+  var lat = pos.coords.latitude;
+  var lng = pos.coords.longitude;
+  document.getElementById("obsgps").value = "Lat: " + lat.toFixed(3) + " Lon: " + lng.toFixed(3);
+});
+ 
+        //   document.getElementById("obsdesc").type = "hidden";
 });
 
 </script>

@@ -4,10 +4,12 @@ include("include/session.php");
 
 $urldesc = $_GET['urldesc'];
 $urllabel = $_GET['urllabel'];
+$urltype = $_GET['urltype'];
+$urlname = $_GET['urlname'];
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -24,20 +26,20 @@ try {
          urldesc
       ) VALUES (
          :programid,
-         'link',
+         :urltype,
          :urlname,
          :urllabel,
          :urldesc)");          
 
-   $urllabel = $urllabel;
-   $urlname = "html";
+   if ($urlname == "") { $urlname = 'html'; }
    $stmt -> bindParam(':programid', $programid, PDO::PARAM_STR);
+   $stmt -> bindParam(':urltype', $urltype, PDO::PARAM_STR);
    $stmt -> bindParam(':urllabel', $urllabel, PDO::PARAM_STR);
    $stmt -> bindParam(':urlname', $urlname, PDO::PARAM_STR);
    $stmt -> bindParam(':urldesc', $urldesc, PDO::PARAM_STR);
             
    $stmt -> execute();            
-   header('Location: programurl.php?urltype=link');
+   header('Location: programurl.php?urltype='.$urltype);
 
 } catch(Exception $e) {
    $_SESSION['message'] = 'We are unable to process your request. Please try again later...'.$e;

@@ -3,17 +3,18 @@
 try {
    
   if ( !isset($dbh) ) {
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password); 
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    $dbh -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   }
 
   if ( isset($userid) && isset($programid) ) {
+   
+   if ( isset($_SESSION['msgidlist']) ) {
 
-   if ( isset($_GET['msgidlist']) ) {
-
-      $msgidlist = $_GET['msgidlist'];      
+      $msgidlist = $_SESSION['msgidlist'];      
       $msgidarray = explode(",", $msgidlist);
-      
+      $_SESSION['msgidlist'] = '';
+           
       foreach ( $msgidarray as $msgid ) {
          $msgid = intval(substr($msgid, 3, 10));
 
@@ -37,7 +38,7 @@ try {
          }
       }
    }
-         
+      
    $stmt = $dbh -> prepare("
       UPDATE programuser
       SET msgunreadcount =
@@ -105,7 +106,7 @@ try {
    $pollcount = "";
    $linkcount = "";
    $chartcount = "";
-   
+
    $stmt = $dbh -> prepare(
       "SELECT 
          COUNT(programurlid) AS :pollcount
@@ -149,6 +150,29 @@ try {
    if ( $count == 1 ) {
       $_SESSION['linkcount'] = $linkcount;
    }
+             
+   $stmt = $dbh -> prepare(
+      "SELECT 
+         COUNT(programurlid) AS :toolcount
+      FROM programurl purl
+      WHERE purl.urltype = 'tool'
+        AND purl.programid = :programid;
+      ");
+
+   $toolcount = "";
+   $stmt -> bindParam(':programid', $programid, PDO::PARAM_STR, 40);
+   $stmt -> bindParam(':toolcount', $toolcount, PDO::PARAM_STR, 40);
+            
+   /*** execute the prepared statement ***/
+   $stmt -> execute();
+   $count = $stmt -> rowCount();
+   $row = $stmt->fetch(PDO::FETCH_NUM);
+   
+   $toolcount = $row[0];
+  
+   if ( $count == 1 ) {
+      $_SESSION['toolcount'] = $toolcount;
+   }
    
    $stmt = $dbh -> prepare(
       "SELECT 
@@ -171,7 +195,33 @@ try {
    if ( $count == 1 ) {
       $_SESSION['chartcount'] = $chartcount;
    }
+
+   $goalcount = "";
+   $stmt = $dbh -> prepare("
+      SELECT COUNT(pru.programruleuserid) AS :goalcount
+      FROM rule r,
+        programruleuser pru
+      WHERE r.ruletype = 'gaslow'
+       AND  r.ruleid = pru.ruleid
+       AND  pru.programid = :programid
+       AND  pru.userid = :userid;
+      ");
+
+   $stmt -> bindParam(':programid', $programid, PDO::PARAM_STR, 40);
+   $stmt -> bindParam(':userid', $userid, PDO::PARAM_STR, 40);
+   $stmt -> bindParam(':goalcount', $goalcount, PDO::PARAM_STR, 40);
+            
+   /*** execute the prepared statement ***/
+   $stmt -> execute();
+   $count = $stmt -> rowCount();
+   $row = $stmt->fetch(PDO::FETCH_NUM);
    
+   $goalcount = $row[0];
+
+   if ( $count == 1 ) {
+      $_SESSION['goalcount'] = $goalcount;
+   }
+       
    $usercount = "";
    $stmt = $dbh -> prepare(
       "SELECT 
@@ -199,7 +249,7 @@ try {
   }
 
 } catch(Exception $e) {
-   $_SESSION['message'] = "Failed to insert userobs";
+   $_SESSION['message'] = "Failed to refresh settings-->".$e;
    header("Location: error.php");
 }
    

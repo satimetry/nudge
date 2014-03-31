@@ -1,4 +1,74 @@
 
+CREATE TABLE tmpuser AS 
+SELECT * FROM user;
+
+DROP TABLE IF EXISTS user;
+CREATE TABLE user (
+userid int(11) NOT NULL auto_increment,
+username varchar(20) NOT NULL,
+password char(40) NOT NULL,
+sex int(11) NOT NULL DEFAULT 0,
+age int(11) NOT NULL,
+createdate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+pushoveruser varchar(40),
+fitbitkey varchar(40),
+fitbitsecret varchar(40),
+fitbitappname varchar(40),
+PRIMARY KEY (userid),
+UNIQUE KEY username (username)
+);
+INSERT INTO user (
+userid,
+username,
+password,
+sex,
+age,
+pushoveruser,
+fitbitkey,
+fitbitsecret,
+fitbitappname)
+SELECT 
+userid,
+username,
+password,
+0,
+0,
+pushoveruser,
+fitbitkey,
+fitbitsecret,
+fitbitappname
+FROM tmpuser;
+
+
+load data local infile '/Users/stefanopicozzi/websites/nudge/data/poll.csv' 
+into table poll
+fields terminated by ','
+ESCAPED BY '\\'
+enclosed by '"'
+LINES TERMINATED BY '\r'
+( pollid, programid, pollname, qcount, polldesc, isinternal, pollurl );
+
+
+load data local infile '/Users/stefanopicozzi/websites/nudge/data/pollq.csv' 
+into table pollq
+fields terminated by ','
+ESCAPED BY '\\'
+enclosed by '"'
+LINES TERMINATED BY '\r'
+( 
+pollqid,
+programid,
+pollid,
+qseqno,
+qname,
+qcount,
+qinstruction,
+qtext,
+q01value, q01label, q02value, q02label, q03value, q03label, q04value, q04label, q05value, q05label, 
+q06value, q06label, q07value, q07label, q08value, q08label, q09value, q09label, q10value, q10label );
+
+
+
 // 1. Set up new program
 INSERT INTO program
 (programname, isdefault) VALUES
@@ -52,31 +122,7 @@ q01value, q01label, q02value, q02label, q03value, q03label, q04value, q04label, 
 q06value, q06label, q07value, q07label, q08value, q08label, q09value, q09label, q10value, q10label );
 
 
-load data local infile '/Users/stefanopicozzi/websites/nudge/data/poll.csv' 
-into table poll
-fields terminated by ','
-ESCAPED BY '\\'
-enclosed by '"'
-LINES TERMINATED BY '\r'
-( pollid, programid, pollname, qcount, polldesc, isinternal, pollurl );
 
-load data local infile '/Users/stefanopicozzi/websites/nudge/data/pollq.csv' 
-into table pollq
-fields terminated by ','
-ESCAPED BY '\\'
-enclosed by '"'
-LINES TERMINATED BY '\r'
-( 
-pollqid,
-programid,
-pollid,
-qseqno,
-qname,
-qcount,
-qinstruction,
-qtext,
-q01value, q01label, q02value, q02label, q03value, q03label, q04value, q04label, q05value, q05label, 
-q06value, q06label, q07value, q07label, q08value, q08label, q09value, q09label, q10value, q10label );
 
 
 DELETE FROM programrule;

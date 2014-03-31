@@ -24,6 +24,8 @@ $pollname  = $responseJSON->{'pollname'};
 $userid  = $responseJSON->{'userid'};
 $lastqseqno = $responseJSON->{'lastqseqno'};
 $qcount = $responseJSON->{'qcount'};
+$polldate = $responseJSON->{'polldate'};
+
 if ( $qcount > 0 ) { $q01value = $responseJSON->{'q01value'}; }
 if ( $qcount > 1 ) { $q02value = $responseJSON->{'q02value'}; }
 if ( $qcount > 2 ) { $q03value = $responseJSON->{'q03value'}; }
@@ -37,7 +39,7 @@ if ( $qcount > 9 ) { $q10value = $responseJSON->{'q10value'}; }
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -52,6 +54,7 @@ try {
          userid,
          lastqseqno,
          qcount,
+         polldate,
          q01value,
          q02value,
          q03value,
@@ -68,6 +71,7 @@ try {
          :userid,
          :lastqseqno,
          :qcount,
+         :polldate,
          :q01value,
          :q02value,
          :q03value,
@@ -85,6 +89,8 @@ try {
    $stmt -> bindParam(':userid', $userid, PDO::PARAM_STR);
    $stmt -> bindParam(':lastqseqno', $lastqseqno, PDO::PARAM_STR);
    $stmt -> bindParam(':qcount', $qcount, PDO::PARAM_STR);
+   $stmt -> bindParam(':polldate', $polldate, PDO::PARAM_STR);
+      
    $stmt -> bindParam(':q01value', $q01value, PDO::PARAM_STR);
    $stmt -> bindParam(':q02value', $q02value, PDO::PARAM_STR);
    $stmt -> bindParam(':q03value', $q03value, PDO::PARAM_STR);
@@ -103,7 +109,11 @@ try {
       header("Location: error.php");
    }
    
-   $obsvalue = $qcount;
+   if ($qcount == 1 ) {
+       $obsvalue = $q01value;
+   } else {
+       $obsvalue = $qcount;
+   }
    $obstype = 'poll';
    $obsname = $pollname;
    $obsdesc = $polldesc;   

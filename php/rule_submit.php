@@ -7,10 +7,11 @@ $ruledesc = $_GET['ruledesc'];
 $ruletype = $_GET['ruletype'];
 $awardtype = $_GET['awardtype'];
 $pollname = $_GET['pollname'];
+$parentruleid = $_GET['parentruleid'];
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -24,13 +25,15 @@ try {
          ruledesc,
          ruletype,
          awardtype,
-         pollname
+         pollname,
+         parentruleid
       ) VALUES (
          :rulename,
          :ruledesc,
          :ruletype,
          :awardtype,
-         :pollname
+         :pollname,
+         :parentruleid
       )");          
 
    $stmt -> bindParam(':rulename', $rulename, PDO::PARAM_STR);
@@ -38,7 +41,8 @@ try {
    $stmt -> bindParam(':ruletype', $ruletype, PDO::PARAM_STR);
    $stmt -> bindParam(':awardtype', $awardtype, PDO::PARAM_STR);
    $stmt -> bindParam(':pollname', $pollname, PDO::PARAM_STR);
-               
+   $stmt -> bindParam(':parentruleid', $parentruleid, PDO::PARAM_STR);
+                  
    $stmt -> execute();            
    header('Location: rule.php');
 

@@ -5,7 +5,7 @@ include('include/hit.php');
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -108,7 +108,7 @@ try {
                <h6>               
                   <?php echo $rulename; ?>
                </h6>
-               <p style="font-size:15px !important;"> <?php echo "Level = ".$ruletype.". ".$ruledesc; ?> </p>
+               <p style="font-size:15px !important;"> <?php echo $ruledesc; ?> </p>
                </div>
                </a>
             </li>
@@ -158,65 +158,78 @@ try {
    
    <div class="content" data-role="content">
    
-   <form id="rule_insert" action="rule_submit.php" method="get"  rel="external" data-ajax="false"> 
+    <form id="rule_insert" action="rule_submit.php" method="get"  rel="external" data-ajax="false"> 
 
-   <div data-role="fieldcontain">
+    <div data-role="fieldcontain">
 
       <fieldset data-role="controlgroup">
-         <legend>Rule Entry</legend>
+        <legend>Rule Entry</legend>
 
-         <div data-role="fieldcontain">                     
-         <input type=text class=insert_rulename name=rulename id=insert_rulename placeholder="Rule name">
-         </div>
-
-         <div data-role="fieldcontain">                                       
-         <input type=text name=ruledesc id=insert_ruledesc placeholder="Rule description">
-         </div>
-         
-         <div data-role="fieldcontain">                     
-         <fieldset data-role="controlgroup" data-mini="true"> 
-         <label for="user">User</label>
-         <input type="radio" name="ruletype" id="user" value="user" />
-         <label for="group">Group</label>
-         <input type="radio" name="ruletype" id="group" value="group" />
-         <label for="program">Program</label>
-         <input type="radio" name="ruletype" id="program" value="program" checked="checked" />
-         <label for="poll">Poll</label>
-         <input type="radio" name="ruletype" id="poll" value="poll" />
-         <label for="system">System</label>
-         <input type="radio" name="ruletype" id="system" value="system" />
-         </fieldset>
+        <div data-role="fieldcontain">
+          <label for="rulename">Name:</label>                      
+          <input type=text class=rulename name=rulename id=rulename placeholder="Rule name">
          </div>
 
-         <div data-role="fieldcontain">                                       
-         <input type=text name=pollname id=insert_rpollname placeholder="Poll Name">
-         </div>
-         
-         <div data-role="fieldcontain">            
-         <fieldset data-role="controlgroup" data-mini="true">      
-         <label for="awardtype" class="select">Award:</label>
-         <select name="awardtype" id="insert_awardtype" data-mini="true">
+        <div data-role="fieldcontain">                                       
+          <label for="ruledesc">Description:</label>                      
+          <input type=text name=ruledesc id=ruledesc placeholder="Rule description">
+        </div>
+                     
+        <div data-role="fieldcontain">                     
+          <label for="ruletype">Type:</label>  
+          <div data-role="controlgroup"> 
+          <select name="ruletype" id="ruletype" class="ruletype" data-mini="true" >
+            <option value="user"> User </option>
+            <option value="group"> Group </option>
+            <option value="program"> Program </option>
+            <option value="poll"> Poll </option>
+            <option value="system"> System </option>
+            <option value="gashigh"> GAS - Higher Order Goal </option>
+            <option value="gaslow"> GAS - Lower Order Goal </option>
+            <option value="gas1"> GAS - Worst Expected Outcome </option>   
+            <option value="gas2"> GAS - Less Than Expected Outcome </option>   
+            <option value="gas3"> GAS - Expected Outcome </option>   
+            <option value="gas4"> GAS - More Than Expected Outcome </option>   
+            <option value="gas5"> GAS - Best Expected Outcome </option> 
+          </select>         
+        </div>
+        </div>
+
+        <div data-role="fieldcontain">
+          <label for="pollname">Associated Poll:</label>                                           
+          <input type=text name=pollname id=pollname placeholder="Poll Name">
+        </div>
+
+        <div data-role="fieldcontain">
+          <label for="parentruleid">Parent Rule ID:</label>                                           
+          <input type="number" name=parentruleid id=parentruleid placeholder="">
+        </div>
+                 
+        <div data-role="fieldcontain">            
+          <label for="awardtype">Award:</label>  
+          <div data-role="controlgroup" data-mini="true">        
+          <select class="awardtype" name="awardtype" id="awardtype" data-mini="true">
             <option value="gold">Gold</option>
             <option value="silver">Silver</option>
             <option value="bronze">Bronze</option>
             <option value="cockateil">Cockateil</option>
-         </select> 
-         </fieldset>
-         </div>
+          </select> 
+        </div>
+        </div>
          
       </fieldset>
                          
-   <center>
-      <input type="button" id="insert_cancel" name="insert_cancel" class="cancel" value="Cancel" data-inline="true">
-      <input type="submit" name="insert_submit" id="insert_submit" value="Add" data-inline="true">
-   </center>
+      <center>
+        <input type="button" id="insert_cancel" name="insert_cancel" class="cancel" value="Cancel" data-inline="true">
+        <input type="submit" name="insert_submit" id="insert_submit" value="Add" data-inline="true">
+      </center>
 
-   </div>
-   </form>
+    </div>
+    </form>
 
-   </div>
+  </div>
    
-   <script> writeFooter(); </script>
+  <script> writeFooter(); </script>
 
 <script>
 $('#rule').submit(function() {
@@ -243,6 +256,12 @@ $('#rulelist li').click(function() {
    var rid = $(this).attr('data-name');
    localStorage.setItem("rid", rid);                                 
 });  
+
+$('#insert_cancel').click(function() {
+   url = "#pageRule";
+   window.location.href = url;
+   return false;
+});
    
 $( '#popupRule' ).on( 'popupbeforeposition',function(event){
    var rid = localStorage.getItem("rid");

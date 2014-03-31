@@ -23,7 +23,15 @@ obstypeJSON[4] = {
 };
 obstypeJSON[5] = {
    "name" : "other",
-   "metric" : "Other, please specify"
+   "metric" : "Other, please specify below"
+};
+
+var rulenameJSON = new Array();
+rulenameJSON[0] = {
+   "name" : "fitbit",
+};
+rulenameJSON[1] = {
+   "name" : "donudgeapi",
 };
 
 // Program global attributes section
@@ -33,9 +41,28 @@ var programJSON = new Array();
 
 programJSON[0] = {
    "programid" : 1,
+   "name" : "lifecoach",
+   "desc" : "The Coach in your Pocket",
+   "isdefault" : 1,
+   "linkcount" : 2,
+   "dataentrycount" : 3,
+   "toolcount" : 2,
+   "extrascount" : 2,
+   "extrasitem" : [ 
+         {"href" : "TheMatrix.php", "name" : "The Matrix"}, 
+         {"href" : "NudgeAPI.php", "name" : "Nudge API"}, 
+      ],   
+   "chartcount" : 3,
+   "chartusercount" : 3,
+   "chartgroupcount" : 0,
+   "chartprogramcount" : 0,
+};
+
+programJSON[1] = {
+   "programid" : 2,
    "name" : "fitbit",
    "desc" : "Fitbit Activity Monitoring",
-   "isdefault" : 1,
+   "isdefault" : 0,
    "linkcount" : 2,
    "dataentrycount" : 2,
    "toolcount" : 2,
@@ -49,77 +76,12 @@ programJSON[0] = {
    "chartprogramcount" : 0,
 };
 
-programJSON[1] = {
-   "programid" : 2,
-   "name" : "study1",
-   "desc" : "MLWW Study1 Program",
-   "isdefault" : 0,
-   "linkcount" : 7,
-   "dataentrycount" : 2,
-   "toolcount" : 2,
-   "extrascount" : 2,
-   "extrasitem" : [ 
-   		{"href" : "#pageWordCloud", "name" : "World Cloud"}, 
-   		{"href" : "#pageRandomPhrase", "name" : "Random Phrase"}, 
-         {"href" : "TheMatrix.php", "name" : "The Matrix"}, 
-   	],
-   "chartcount" : 3,
-   "chartusercount" : 11,
-   "chartgroupcount" : 4,
-   "chartprogramcount" : 11,
-};
 
-programJSON[2] = {
-   "programid" : 3,
-   "name" : "study2",
-   "desc" : "MLWW Study2 Program",
-   "isdefault" : 0,
-   "linkcount" : 0,
-   "dataentrycount" : 2,
-   "toolcount" : 1,
-   "extrascount" : 0,   
-   "chartcount" : 3,
-   "chartusercount" : 0,
-   "chartgroupcount" : 0,
-   "chartprogramcount" : 0,
-};
-
-programJSON[3] = {
-   "programid" : 4,
-   "name" : "mbsr",
-   "desc" : "Mindfulness Based Stress Reduction",
-   "isdefault" : 0,
-   "linkcount" : 0,
-   "dataentrycount" : 2,
-   "toolcount" : 2,
-   "extrascount" : 0,   
-   "chartcount" : 3,
-   "chartusercount" : 0,
-   "chartgroupcount" : 0,
-   "chartprogramcount" : 0,
-};
-
-programJSON[4] = {
-   "programid" : 5,
-   "name" : "lifecoach",
-   "desc" : "The Coach in your Pocket",
-   "isdefault" : 0,
-   "linkcount" : 0,
-   "dataentrycount" : 2,
-   "toolcount" : 2,
-   "extrascount" : 1,
-   "extrasitem" : [ 
-         {"href" : "TheMatrix.php", "name" : "The Matrix"}, 
-      ],   
-   "chartcount" : 3,
-   "chartusercount" : 0,
-   "chartgroupcount" : 0,
-   "chartprogramcount" : 0,
-};
 
 var user = {
    "msgunreadcount": 0,
    "ruleoptincount" : 0,
+   "goalcount" : 0,
    "chartcount" : 0,
    "pollcount" : 0,
    "linkcount" : 0,   
@@ -129,7 +91,7 @@ var user = {
 // Find or set program
 var programidx = 0;
 var programname = localStorage.getItem("programname");
-if ( programname.length > 0) {
+if ( programname != null && programname.length > 0) {  
    for (var i=0 ; i < programJSON.length; i++) {
       if (programJSON[i].name == programname) { programidx = i; }
    }
@@ -189,7 +151,7 @@ function writeHeader (left, right) {
    if (left == "backlink")     { leftlink = "programurl.php?urltype=link";   lefticon = "back";  }   
    if (left == "backhelp")     { leftlink = "help.php";   lefticon = "back";  }   
    if (left == "backgaslow")   { leftlink = "goal.php?ruletype=gaslow";   lefticon = "back";  }   
-   if (left == "backrulegas")  { leftlink = "programruleuser.php?ruletype=gas";   lefticon = "back";  }   
+   if (left == "backrulegas")  { leftlink = "programgoal.php?ruletype=gashigh";   lefticon = "back";  }   
 
    if (right == "home")        { rightlink = "index.php";                    righticon = "home"; }   
    if (right == "settings")    { rightlink = "settings.php";                 righticon = "gear"; }
@@ -199,8 +161,9 @@ function writeHeader (left, right) {
    if (right == "insertnudge") { rightlink = "#pageInsertNudgeAll";          righticon = "plus"; }         
    if (right == "matrixcheck") { rightlink = "#matrixcheck";                 righticon = "check"; }         
    if (right == "msgs")        { rightlink = "msg.php";                      righticon = "grid"; }         
-   if (right == "accountinfo") { rightlink = "help.php#pageAccount";         righticon = "info"; }         
-   
+   if (right == "accountinfo") { rightlink = "help.php#pageAccount";         righticon = "info"; }       
+   if (right == "inserturl")   { rightlink = "#pageInsertURL"; 		 			       righticon = "plus"; }         
+
    document.write('<header style=\"background:url(\'images/strip.png\'); no-repeat;\" data-role=\"header\" data-position=\"inline\">');
    document.write('  <a data-ajax=\"false\" href=\"' + leftlink + '\" data-ajax="false" data-role="button" data-icon=\"' + lefticon + '\" data-iconpos=\"notext\">Help</a>');
    document.write('  <p class=smallparagraph style=\"text-align:center; font-weight:bold; font-style:italic;\">');
@@ -210,4 +173,7 @@ function writeHeader (left, right) {
    document.write(' <var class=verysmallparagraph style=\"text-align:left;font-size:11px;font-style:normal;margin-left:10px;"> A behavioral insight platform for coaches and coachees. </var>');   
 
 }
+
+
+
 

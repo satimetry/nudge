@@ -17,7 +17,7 @@ if ( isset($_GET['roletype']) ) {
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -28,18 +28,22 @@ try {
          r.ruleid AS :ruleid,   
          r.rulename AS :rulename,
          pru.rulevalue AS :rulevalue,     
-         r.ruledesc AS :ruledesc,
+         r.ruledesc AS :ruledesclow,
          pru.rulehigh AS :rulehigh,
          pru.rulelow AS :rulelow,
          pu.userid AS :userid,
          u.username AS :username,
-         pru.ruleuserdesc AS :ruleuserdesc
+         pru.ruleuserdesc AS :ruleuserdesclow,
+         pruhigh.ruleuserdesc AS :ruleuserdeschigh,
+         rhigh.ruledesc AS :ruledeschigh
       FROM 
          programuser pu,
          programrule pr,     
-         programruleuser pru,     
+         programruleuser pru,
+         programruleuser pruhigh,     
          rule r,
-         user u
+         user u,
+         rule rhigh
       WHERE pu.userid = :userid 
       AND  pu.userid = pru.userid
       AND  u.userid = pru.userid            
@@ -48,34 +52,42 @@ try {
       AND  pru.programid = :programid 
       AND  pru.programid = pu.programid
       AND  pr.programid = pu.programid
-      AND  pr.ruleid = pru.ruleid 
+      AND  pr.ruleid = pru.ruleid
+      AND  pruhigh.ruleid = r.parentruleid
+      AND  pruhigh.userid = :userid
+      AND  pruhigh.programid = :programid
       AND  r.ruletype LIKE CONCAT(:ruletype, '%')
       AND  r.ruleid = pru.ruleid
-      ORDER BY rulename;");
+      AND  rhigh.ruleid = r.parentruleid
+      ORDER BY r.rulename;");
 
    
    /*** bind the parameters ***/
    $rulename = "";
-   $ruledesc = "";
    $rulevalue = "";
    $ruleid = "";
    $rulehigh = "";   
    $rulelow = "";
-	$username = "";
-   $ruleuserdesc = "";
+	 $username = "";
+   $ruledesclow = ""; 
+	 $ruleuserdesclow = "";
+   $ruleuserdeschigh = "";
+   $ruledeschigh = "";
       
-	$stmt -> bindParam(':userid', $userid, PDO::PARAM_STR);
+	 $stmt -> bindParam(':userid', $userid, PDO::PARAM_STR);
    $stmt -> bindParam(':ruletype', $ruletype, PDO::PARAM_STR);
    $stmt -> bindParam(':rulename', $rulename, PDO::PARAM_STR);
    $stmt -> bindParam(':rulevalue', $rulevalue, PDO::PARAM_STR);
-   $stmt -> bindParam(':ruledesc', $ruledesc, PDO::PARAM_STR);
    $stmt -> bindParam(':ruleid', $ruleid, PDO::PARAM_STR);
    $stmt -> bindParam(':programid', $programid, PDO::PARAM_STR);
    $stmt -> bindParam(':rulehigh', $rulehigh, PDO::PARAM_STR);
    $stmt -> bindParam(':rulelow', $rulelow, PDO::PARAM_STR);
    $stmt -> bindParam(':username', $username, PDO::PARAM_STR);
-   $stmt -> bindParam(':ruleuserdesc', $ruleuserdesc, PDO::PARAM_STR);
-               
+   $stmt -> bindParam(':ruledesclow', $ruledesclow, PDO::PARAM_STR);
+   $stmt -> bindParam(':ruleuserdesclow', $ruleuserdesclow, PDO::PARAM_STR);
+   $stmt -> bindParam(':ruleuserdeschigh', $ruleuserdeschigh, PDO::PARAM_STR);
+   $stmt -> bindParam(':ruledeschigh', $ruledeschigh, PDO::PARAM_STR);
+                  
 } catch(Exception $e) {
    $_SESSION['message'] = 'We are unable to process your request. Please try again later...'.$e;
    header("Location: error.php");
@@ -101,6 +113,7 @@ try {
       <link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
       <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.0/jquery.mobile.structure-1.4.0.min.css" />
       <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+      <script src="js/customjqm.js"  ></script>  
       <script src="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>
       
       <link rel="stylesheet" href="css/nudge.css" />      
@@ -120,9 +133,9 @@ try {
             <li data-role="divider"> 
             	<?php 
             	if ( $ruletype == "gashigh" ) {
-            		echo "<h4> Higher Level Goals </h4>";
+            		echo "<h4> Goals </h4>";
 				   } else if ( $ruletype == "gaslow" ) {
-            		echo "<h4> Lower Level Goals </h4>";
+            		echo "<h4> Goals </h4>";
 				   } else if ( strpos($ruletype, "gas") !== false ) { 
                   echo "<h4> Click the gear to customize </h4>";
                } ?>             	
@@ -131,15 +144,18 @@ try {
             <?php $stmt->execute();
                while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
                	$id = $row[0];
-                  $ruleid = $row[0];              	
-                  $rulename = $row[1];
-						$rulevalue = $row[2];
-						$ruledesc = $row[3];
-						$rulehigh = $row[4];
-						$rulelow = $row[5];
-                  $userid = $row[6];
-                  $username = $row[7];                 															
-                  $ruleuserdesc = $row[8];                                                             
+                $ruleid = $row[0];              	
+                $rulename = $row[1];
+						    $rulevalue = $row[2];
+						    $ruledesclow = $row[3];
+						    $rulehigh = $row[4];
+						    $rulelow = $row[5];
+                $userid = $row[6];
+                $username = $row[7];                 															
+                $ruleuserdesclow = $row[8];                                                             
+                $ruleuserdeschigh = $row[9];
+                $ruledeschigh = $row[10];                                                             
+
             ?>
 
             <li data-name=<?php echo "pru".$id; ?> data-icon="arrow-r">
@@ -150,16 +166,21 @@ try {
                <input type=hidden id=<?php echo "pru".$id."_rulehigh"; ?> name="rulehigh" value=<?php echo $rulehigh; ?> >
                <input type=hidden id=<?php echo "pru".$id."_rulelow"; ?> name="rulehigh" value=<?php echo $rulelow; ?> >
                <input type=hidden id=<?php echo "pru".$id."_userid"; ?> name="userid" value=<?php echo $userid; ?> >
-               <input type=hidden id=<?php echo "pru".$id."_ruledesc"; ?> name="ruledesc" value="<?php echo $ruledesc; ?>" >
-               <input type=hidden id=<?php echo "pru".$id."_ruleuserdesc"; ?> name="ruledesc" value="<?php echo $ruleuserdesc; ?>" >
+               <input type=hidden id=<?php echo "pru".$id."_ruledesc"; ?> name="ruledesc" value="<?php echo $ruledesclow; ?>" >
+               <input type=hidden id=<?php echo "pru".$id."_ruleuserdesc"; ?> name="ruledesc" value="<?php echo $ruleuserdesclow; ?>" >
                
                <div>
                   <div style="white-space:normal;">
                   <?php
-                  if ( strlen($ruleuserdesc) > 0 ) {
-                     echo '<h6> '.$ruleuserdesc. '</h6>';
+                  if ( strlen($ruleuserdeschigh) > 0 ) {
+                     echo '<h6> To: '.$ruleuserdeschigh.'</h6>';
                   } else {
-                     echo '<p style=\"font-size=13px;font-weight:bold; !important\" >'.$rulename." - ".$ruledesc.'</p>'; 
+                     echo '<h6> To: '.$ruledeschigh.'</h6>';                    
+                  }                    
+                  if ( strlen($ruleuserdesclow) > 0 ) {
+                     echo '<h7 style="font-style:italic;"> By: '.$ruleuserdesclow. '</h7>';
+                  } else {
+                     echo '<h7 style="font-style:italic;"> By: '.$ruledesclow. '</h7>';
                   } ?> 
                   </div>
                </div>
@@ -299,12 +320,13 @@ try {
   				</div>
 
             <div data-role="fieldcontain" >                                 
-            <fieldset data-role="controlgroup" data-mini="true"> 
-               <label for="opt-in">Opt-in</label>
-               <input type="radio" name="rulevalue" id="opt-in" value="1" checked="checked" />
-               <label for="opt-out">Opt-out</label>
-               <input type="radio" name="rulevalue" id="opt-out" value="0" />
-            </fieldset>
+              <label for="rulevalue"> Opt-in/out: </label>  
+              <div data-role="controlgroup" data-mini="true"> 
+                <label for="opt-in">Opt-in</label>
+                <input type="radio" class="rulevalue" name="rulevalue" id="rulevalue" value="1" checked="checked" />
+                <label for="opt-out">Opt-out</label>
+                <input type="radio" class="rulevalue" name="rulevalue" id="rulevalue" value="0" />
+              </div>
             </div>
   
             </center>
@@ -330,7 +352,10 @@ try {
 </body>           
 
 <script>
-       
+$('#GoalList li').click(function() {
+   return true;
+});
+
 $('#pru_cancel').click(function() {
    $('#popupGoal').popup("close");
 });

@@ -18,7 +18,7 @@ include("include/db.php");
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
 
    /*** set the error mode to excptions ***/
    $dbh -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -49,8 +49,8 @@ try {
             
    /*** execute the prepared statement ***/
    $stmt -> execute();
+   $pucount = $stmt->rowCount();
    $row = $stmt->fetch(PDO::FETCH_NUM);   
-   $pucount = $stmt -> rowCount();
    
    $userid = $row[0];
    $roletype = $row[1];
@@ -85,7 +85,7 @@ try {
     
    $stmt->execute();
    $mcount = $stmt->rowCount();
-   if ($mcount == 0 ) {
+   if ( $mcount == 0 || $roletype != "participant" ) {
       header("Location: index.php"); 
    } else {
       header("Location: splash.php");       

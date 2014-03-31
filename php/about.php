@@ -1,6 +1,6 @@
 <?php
 include("include/sessionlight.php");
-include('include/hit.php');
+#include('include/hit.php');
 ?>
 
 
@@ -168,7 +168,16 @@ include('include/hit.php');
                      <?php echo $_SESSION['roletype']; ?>
                   </div>                                   
             </li> 
-
+            <li data-inset="true" >  
+               <div class="ui-grid-a">     
+                  <div class="ui-block-a" >
+                     toolcount
+                  </div>
+                  <div  class="ui-block-b" >
+                     <?php echo $_SESSION['toolcount']; ?>
+                  </div>                                   
+            </li> 
+            
             <li data-inset="true" >  
                <div class="ui-grid-a">     
                   <div class="ui-block-a" >
@@ -208,7 +217,17 @@ include('include/hit.php');
                      <?php echo $_SESSION['msgidlist']; ?>
                   </div>                                   
             </li>
-                                                             
+
+            <li data-inset="true" >  
+               <div class="ui-grid-a">     
+                  <div class="ui-block-a" >
+                     database
+                  </div>
+                  <div  class="ui-block-b" >
+                     <?php echo $mysql_hostname.":".$mysql_port."/".$mysql_dbname; ?>
+                  </div>                                   
+            </li>
+                                                                                             
          </ul>
       </div
       

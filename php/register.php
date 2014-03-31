@@ -31,20 +31,43 @@
             
       <form id="register" action="register_submit.php" method="get"  rel="external" data-ajax="false"> 
 
-         <fieldset data-role="controlgroup">
+        <div data-role="fieldcontain">
 
+        <fieldset data-role="controlgroup">
+          
           <legend>Enrolment</legend>
-
-         <center>         
+       
           <div data-role="fieldcontain">
+            <label for="username">Username:</label>
             <input type="text" class="username" name="username" id="username" value="" placeholder="Username" minlength=4 autofocus required>
-            <input type="password" class="password" name="password" id="password" value="" autocomplete="off" placeholder="Password" required>
           </div>
 
-          <div data-role="controlgroup">         
-               <select name="programid" id="programid" class="programid"  data-mini="true" >
-                  <script> 
-                  for (var i=0 ; i < programJSON.length; i++) {
+          <div data-role="fieldcontain">
+            <label for="password">Password:</label>              
+            <input type="password" class="password" name="password" id="password" value="" autocomplete="off" placeholder="Password" required>          
+          </div>
+            
+          <div data-role="fieldcontain">
+            <label for="age">Age:</label>    
+            <input type="number" data-mini="true" class="age" name="age" id="age" value="" placeholder="Optional, your age in years" minlength=2>
+          </div>
+
+          <div data-role="fieldcontain">
+          <label for="sex">Sex:</label>  
+          <div data-role="controlgroup">   
+            <select name="sex" id="sex" class="sex" data-mini="true" >
+              <option value="0" selected="selected"> Male </option>
+              <option value="1"> Female </option>
+            </select>
+          </div>
+          </div>
+          
+          <div data-role="fieldcontain">
+          <label for="programid">Program:</label> 
+          <div data-role="controlgroup">   
+            <select name="programid" id="programid" class="programid"  data-mini="true" >
+              <script> 
+                 for (var i=0 ; i < programJSON.length; i++) {
                      if (programJSON[i].isdefault == 1) {
                         document.write("<option value=" + programJSON[i].programid + " selected=selected>");
                      } else {
@@ -52,28 +75,31 @@
                      }
                      document.write("<var class='obsdesc2'>" + programJSON[i].desc + "</var></option>");
                   }
-                  </script>
-               </select>                     
+              </script>
+            </select>    
+            </div>                 
             <input type="hidden" class="programname" name="programname" id="programname" value="">
          </div>
-         
-            <div data-role="controlgroup">     
-               <select name="roletype2" id="roletype2" class="roletype2" disabled="disabled"  data-mini="true" >
-                  <option value="administrator"> Administrator </option>
-                  <option value="architect"> Architect </option>
-                  <option value="participant" selected="selected"> Participant </option>
-               </select>
-               <input type="hidden" class="roletype" name="roletype" id="roletype" value="participant" >
-            </div>
-          </center>                
+
+          <div data-role="fieldcontain">
+          <label for="roletype">Role:</label>
+          <div data-role="controlgroup">                  
+            <select name="roletype" id="roletype" class="roletype" data-mini="true" readonly>
+              <option value="administrator" disabled="disabled"> Administrator </option>
+              <option value="architect" disabled="disabled"> Architect </option>
+              <option value="participant" selected="selected"> Participant </option>
+            </select>
+          </div>
+          </div>
+              
          </fieldset>            
 
-           <center>
-              <input type="submit" value="Enrol" name="register" id="register" data-inline="true">
-           </center>
+        <center>
+            <input type="submit" value="Enroll" name="register" id="register" data-inline="true">
+          </center>
 
          </div>
-         </form>
+      </form>
 
    </div>
    

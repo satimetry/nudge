@@ -19,7 +19,7 @@ if ( isset($_GET['roletype']) ) {
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -58,7 +58,7 @@ try {
       AND  r.ruleid = pru.ruleid
       ORDER BY rulename;");
          
-   } else if ( $roletype == "architect" ) {
+   } else if ( $roletype != "participant" ) {
       $stmt = $dbh -> prepare("
       SELECT
          r.ruleid AS :ruleid,   
@@ -85,7 +85,7 @@ try {
       AND  pr.programid = pu.programid
       AND  pr.ruleid = pru.ruleid
       AND  pu.roletype = 'participant'
-      AND  r.ruletype = :ruletype
+      AND  r.ruletype LIKE CONCAT(:ruletype, '%')
       AND  r.ruleid = pru.ruleid
       ORDER BY rulename;");      
       $userid = "";
@@ -142,6 +142,7 @@ try {
       <link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
       <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.0/jquery.mobile.structure-1.4.0.min.css" />
       <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+      <script src="js/customjqm.js"  ></script>  
       <script src="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>
       
       <link rel="stylesheet" href="css/nudge.css" />      
@@ -159,19 +160,16 @@ try {
       <div class="content-primary" id="ProgramRuleUser">
          <ul data-role="listview" data-filter="true" id="ProgramRuleUserList" data-icon="arrow-r" data-inset="true" >
             <li data-role="divider"> 
-            	<?php 
-            	if ( $ruletype == "program" ) {
-            		echo "<h4> Click the gear to opt in/out </h4>";
-							}
-            	if ( $ruletype == "group" ) {
-            		echo "<h4> Click the gear to opt in/out </h4>";
-							}
-				   if ( $ruletype == "user" ) { 
-            		echo "<h4> Click the gear to customize </h4>";
-            	} 
-               if ( strpos($ruletype, "gas") !== false ) { 
-                  echo "<h4> Click the gear to customize </h4>";
-               } ?>             	
+
+              <script>
+              var ruletype = "<?php echo $ruletype; ?>";
+              if ( ruletype.indexOf("gas") != -1 ) { 
+                document.write("<h4> Click the gear to customize </h4>");
+              } else {
+                document.write("<h4> Click the gear to opt in/out </h4>");                
+              }
+              </script>
+              
             </li>
             	
             <?php $stmt->execute();
@@ -222,7 +220,7 @@ try {
                <p style="font-size:10px !important;"> 
                   <?php 
                   if ( strlen($ruleuserdesc) > 0 ) {
-                     echo $ruleuserdesc;
+                     echo $username." - ".$ruleuserdesc;
                   } else {
                      echo $username." - ".$ruledesc; 
                   } ?> 
@@ -345,8 +343,6 @@ try {
            <fieldset data-role="controlgroup">
             <legend><var style="font-style:normal" class="ruledesc"></var></legend>
 
-            <center>
-
             <input type=hidden name=crudtype id=crudtype value="update">
             <input type=hidden name=ruleid id="pru_ruleid" value="">
             <input type=hidden name=rulename id="pru_rulename" value="">
@@ -367,16 +363,16 @@ try {
          		<input type="number" class="user_rulelow" name="rulelow" id="pru_rulelow" data-mini="true">
   				</div>
 
-            <div data-role="fieldcontain" >                                 
-            <fieldset data-role="controlgroup" data-mini="true"> 
+            <div data-role="fieldcontain" >
+           <label for="rulevalue"> Opt-in/out: </label>                                   
+            <div data-role="controlgroup" data-mini="true"> 
                <label for="opt-in">Opt-in</label>
-               <input type="radio" name="rulevalue" id="opt-in" value="1" checked="checked" />
+               <input type="radio" class="rulevalue" name="rulevalue" id="opt-in" value="1" checked="checked" />
                <label for="opt-out">Opt-out</label>
-               <input type="radio" name="rulevalue" id="opt-out" value="0" />
-            </fieldset>
+               <input type="radio" class="rulevalue" name="rulevalue" id="opt-out" value="0" />
             </div>
-  
-            </center>
+            </div>
+
            </fieldset>
          </div>
            					
@@ -398,7 +394,7 @@ try {
 </body>           
 
 <script>
-       
+
 $('#pru_cancel').click(function() {
    $('#popupProgramRuleUser').popup("close");
 });
@@ -406,6 +402,7 @@ $('#pru_cancel').click(function() {
 $('#ProgramRuleUserList li').click(function() {
    var id = $(this).attr('data-name');
    localStorage.setItem("id", id);
+   return true;
 });  
 
 $( '.rulevalueselect' ).change(function() {

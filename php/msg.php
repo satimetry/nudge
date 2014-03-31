@@ -13,7 +13,7 @@ if ( isset($_GET['roletype']) ) {
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -21,6 +21,12 @@ try {
 
    /* Find the last completed question for this user */
 
+   if ( isset($_GET['msgidlist']) ) {
+     $_SESSION['msgidlist'] = $_GET['msgidlist'];
+     // refresh counters and page views
+     include("include/refresh.php");
+   }
+   
    if ( $roletype == "participant" ) {
       $stmt = $dbh -> prepare("
       SELECT
@@ -42,7 +48,7 @@ try {
       AND  m.programid = :programid 
       AND  r.rulename = m.rulename
       ORDER by msgdate DESC
-      LIMIT 0, 20;");
+      LIMIT 0, 200;");
    } else if ( $roletype == "architect" ) {
       $stmt = $dbh -> prepare("
       SELECT
@@ -62,7 +68,7 @@ try {
            u.userid = m.userid
       AND  m.programid = :programid 
       AND  r.rulename = m.rulename
-      ORDER by ruledate DESC
+      ORDER by msgdate DESC, u.userid ASC, m.rulename ASC;
       ");
       $userid = "";
    }
@@ -130,7 +136,7 @@ try {
             <div class="content-primary" id="Msg">
                <ul data-role="listview" data-filter="true" id="MsgList" data-inset="true" >
                   <li data-role="divider">
-                     <h4>Last 20 nudges</h4>
+                     <h4>Nudges</h4>
                   </li>   
                            
                <?php $stmt->execute();
@@ -201,7 +207,7 @@ try {
             <p> Participant: <var class="popup_username"> username </var></p>
             <p> Nudge: <var class="popup_msgtxt"> msgtxt </var></p>
             <center>
-               <input type="submit" id="msg_submit" name="msg_submit" class="msg_submit" value="Opt Out" data-inline="true">
+               <input type="hidden" id="msg_submit" name="msg_submit" class="msg_submit" value="Opt Out" data-inline="true">
                <input type="button" id="msg_cancel" name="msg_cancel" class="msg_cancel" value="Close" data-inline="true">
                <input type="button" id="msg_url" name="msg_url" class="msg_url" value="Go to site ..." data-inline="true">
             </center>
@@ -226,7 +232,7 @@ $('#MsgList li').click(function() {
    var msgidlist = localStorage.getItem("msgidlist");
    if ( msgidlist != null) { msgidlist += msgid + ","; }   
    // Todo parse thru this list to update msg read count, do at convenient time
-   localStorage.setItem("msgidlist", msgidlist);             
+   localStorage.setItem("msgidlist", msgidlist); 
 }); 
 
 $('#msg_cancel').click(function() {
@@ -267,6 +273,11 @@ $( '#popupMsg' ).on( 'popupbeforeposition',function(event){
    $('.popup_username').empty();
    $('.popup_username').append(username);
 });
+
+$( '#pageMsg' ).on( 'pagebeforeshow',function(event){
+  localStorage.setItem('msgidlist', "");
+});
+
 </script>
 
 </html>

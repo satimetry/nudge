@@ -5,7 +5,7 @@ include('include/hit.php');
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -136,14 +136,16 @@ try {
 
            <fieldset data-role="controlgroup">
 
-            <legend>Diary Entry</legend>
+            <legend>Diary</legend>
             
-            <center>
-               <div data-role="fieldcontain">
-            <textarea cols="40" class="insertuserdiary" name="diarytxt" id="diarytxt" placeholder="Your diary entry" minlength=4 autofocus required> 
-            </textarea>
+            <div data-role="fieldcontain">
+              <label for="diarytxt">Entry:</label>
+              <div data-role="controlgroup">
+              <textarea cols="40" class="diarytxt" name="diarytxt" id="diarytxt" placeholder="Your diary entry" autofocus required> 
+              </textarea>
+              </div>
             </div>
-            </center>
+
           </fieldset>
                       
            <center>

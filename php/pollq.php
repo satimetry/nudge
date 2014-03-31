@@ -14,7 +14,7 @@ if ( isset($_GET['ruleid']) ) { $_SESSION['ruleid'] = $_GET['ruleid']; }
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -255,7 +255,7 @@ if ( pollq != null ) {
             <fieldset data-role="controlgroup">
               <legend style="font-weight:bold;" class="legend" id="legend" name="legend"></legend>
 
-              <p style="font-size:9px;font-style:italic;" class="lastupdate" id="lastupdate" name="lastupdate"></p>
+              <p style="font-size:11px;font-style:normal;" class="lastupdate" id="lastupdate" name="lastupdate"></p>
 
               <p class="question" id="question" name="question"></p>
               <div class="radio" id="radio" name="radio"></div>             
@@ -373,7 +373,7 @@ $( '#pagePollQ' ).on('pagebeforeshow', function(event) {
 
    var qtext = pollqJSON[qidx].qtext;
 
-   var lastupdate = "Last updated: " + "<?php echo $lastobsdate; ?>";
+   var lastupdate = "Last updated: " + "<?php echo $lastpolldate; ?>";
    $('.lastupdate').empty();   
    $('.lastupdate').append(lastupdate);   
       

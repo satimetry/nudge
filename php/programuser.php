@@ -11,7 +11,7 @@ $urltype = $_GET['roletype'];
 
 try {
 
-   $dbh = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_dbname", $mysql_username, $mysql_password);
+   $dbh = new PDO("mysql:host=$mysql_hostname;port=$mysql_port;dbname=$mysql_dbname", $mysql_username, $mysql_password);
    /*** $message = a message saying we have connected ***/
 
    /*** set the error mode to excptions ***/
@@ -182,16 +182,16 @@ try {
       <!-- End: User Page -->
 
 <!-- Begin: InsertNudge page -->
-<div id="pageInsertNudge" class="ui-content" data-ajax="false" data-role="page"  data-add-back-btn="false"> 
+<div id="pageInsertNudge" data-role="page">
    
    <script> writeHeader("backuser", "home"); </script>
             
    <div class="content" data-role="content">
      
       <form id="nudge_form" action="nudge_submit.php" method="get" rel="external" data-ajax="false"> 
-         <div data-role="fieldcontain">
+        <div data-role="fieldcontain">
 
-           <fieldset data-role="controlgroup">
+          <fieldset data-role="controlgroup">
             <legend>Nudge <var style="font-style:normal;" class=nudge_username></var></legend>
             
             <input type="hidden" id="nudge_ruleid" name="ruleid" class="ruleid" value=0>
@@ -201,29 +201,37 @@ try {
             <input type="hidden" id="nudge_username" name="username" class="username">
             
             <div data-role="fieldcontain">
-               <textarea cols="40" rows="8" id="nudge_msgtxt" name="msgtxt" class="msgtxt" placeholder="Nudge says"></textarea>               
+              <label for="msgtxt">Message:</label>  
+              <textarea cols="40" rows="8" id="nudge_msgtxt" name="msgtxt" class="msgtxt" placeholder="Nudge says"></textarea>               
             </div>
 
-            <div data-role="fieldcontain">            
-               <input type="text" id="nudge_urllabel" name="urllabel" class="urllabel" placeholder="Optional URL label" >
+            <div data-role="fieldcontain">
+              <label for="urllabel">URL Label:</label>            
+              <input type="text" id="nudge_urllabel" name="urllabel" class="urllabel" placeholder="Optional URL label" >
             </div>
 
-            <div data-role="fieldcontain">            
-               <input type="radio" id="link" name="urltype" class="urltype" value="link" checked = "checked" >
-               <label for="link">Link</label>
-               <input type="radio" id="poll" name="urltype" class="urltype" value="poll" >
-               <label for="poll">Poll</label>
+            <div data-role="fieldcontain">
+              <label for="urltype">Type:</label>
+              <div data-role="controlgroup">             
+                <input type="radio" id="link" name="urltype" class="urltype" value="link" checked = "checked" >
+                <label for="link">Link</label>
+                <input type="radio" id="poll" name="urltype" class="urltype" value="poll" >
+                <label for="poll">Poll</label>
+               </div>
             </div>
           
-            <div data-role="fieldcontain">            
-               <input type="text" id="nudge_urldesc" name="urldesc" class="urldesc" placeholder="Optional URL resource" >
+            <div data-role="fieldcontain">
+              <label for="urldesc">URL:</label>            
+              <input type="text" id="nudge_urldesc" name="urldesc" class="urldesc" placeholder="Optional URL resource" >
             </div>
                               
             </fieldset>
+            
             <center>
-               <input type="button" id="nudge_cancel" name="nudge_cancel" class="nudge_cancel" value="Cancel" data-inline="true">
-               <input type="submit" id="nudge_submit" name="nudge_submit" class="nudge_submit" value="Nudge" data-inline="true">
+              <input type="button" id="nudge_cancel" name="nudge_cancel" class="nudge_cancel" value="Cancel" data-inline="true">
+              <input type="submit" id="nudge_submit" name="nudge_submit" class="nudge_submit" value="Nudge" data-inline="true">
             </center>
+            
          </div>
       </form>
       
@@ -235,7 +243,7 @@ try {
 <!-- End: InsertNudge div -->
 
 <!-- Begin: InsertNudgeAll page -->
-<div id="pageInsertNudgeAll" class="ui-content" data-ajax="false" data-role="page"  data-add-back-btn="false"> 
+<div id="pageInsertNudgeAll" data-role="page">
    
    <script> writeHeader("backuser", "home"); </script>
             
