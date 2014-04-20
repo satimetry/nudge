@@ -7,10 +7,10 @@ library(rjson)
 userobsDF <- getUserobsDF(rooturl, programid, userid, obsname)
 userobss <- getUserobs(rooturl, programid, userid, obsname)
 
-delFact <- delFact(rooturl, programid, groupid=userid)
-postFact(rooturl, programid, groupid=userid, userobsDF)
-getNudge(rooturl, programid, groupid=userid, rulename=rulename)
-factouts <- getFactsystem(rooturl, programid, groupid=userid)
+delFact(rooturl, programid, groupid=userid, factname=obsname)
+postFact(rooturl, programid, groupid=userid, factname=obsname, userobsDF)
+getNudge(rooturl, programid, groupid=userid, factname=obsname, rulename=rulename)
+factouts <- getFactsystem(rooturl, programid, groupid=userid, factname=obsname)
 
 outputDF = c()
 for (factout in factouts) {
@@ -20,7 +20,7 @@ for (factout in factouts) {
                                  rulemsg=fromJSON(factout$factjson)$rulemsg,
                                  ruledata=fromJSON(factout$factjson)$ruledata))
 }
-outputDF = t(outputDF)
+outputDF = data.frame(t(outputDF))
 
 # Get optinrules for this programid and userid
 optinruleviewDF <- getOptinruleviewDF(rooturl, programid, userid)
@@ -44,13 +44,13 @@ if ( ! is.null(nrow(smsDF)) ) {
    
     rule <- getRule(rooturl, smsDF[i, "rulename" ] )
    
-    ruledate <- as.POSIXct(smsDF[i, "ruledate" ], format = "%a %b %d")
+    # ruledate <- as.POSIXct(smsDF[i, "ruledate" ], format = "%a %b %d")
     
     msg <- c(programid=programid,
             userid,
             ruleid=rule[[1]]$ruleid,
             rulename=paste("\"", smsDF[i, "rulename" ], "\"", sep=""),
-            ruledate=paste("\"", ruledate, "\"", sep=""),
+            ruledate=paste("\"", smsDF[i, "ruledate"], "\"", sep=""),
             msgtxt=paste("\"", smsDF[i, "rulemsg" ], "\"", sep="")
             )
     

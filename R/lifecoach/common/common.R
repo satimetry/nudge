@@ -42,9 +42,9 @@ getRulefile <- function(rooturl, programid, groupid, rulename) {
   return(rulefile)
 }
 
-getNudge <- function(rooturl, programid, groupid, rulename) {
+getNudge <- function(rooturl, programid, groupid, factname, rulename) {
   result <- tryCatch({  
-    facts <- getURL(paste(rooturl, "/nudge?", "programid=", programid, "&groupid=", userid, "&rulename=", rulename, sep=""))
+    facts <- getURL(paste(rooturl, "/nudge?", "programid=", programid, "&groupid=", userid, "&factname=", factname, "&rulename=", rulename, sep=""))
   }, warning = function(w) {
     print("Warning getNudge")
   }, error = function(e) {
@@ -56,9 +56,9 @@ getNudge <- function(rooturl, programid, groupid, rulename) {
   print(result)
 }
 
-getFactDF <- function(rooturl, programid, groupid) {
+getFactDF <- function(rooturl, programid, groupid, factname) {
   factJSON <- tryCatch({  
-    getURL(paste(rooturl, "/fact/user?programid=", programid, "&groupid=", groupid, sep=""))
+    getURL(paste(rooturl, "/fact/user?programid=", programid, "&groupid=", groupid, "&factname=", factname, sep=""))
   }, warning = function(w) {
     print("Warning getFactDF")
   }, error = function(e) {
@@ -76,9 +76,9 @@ getFactDF <- function(rooturl, programid, groupid) {
   return(factDF)
 }
 
-getFactsystem <- function(rooturl, programid, groupid) {
+getFactsystem <- function(rooturl, programid, groupid, factname) {
   factJSON <- tryCatch({  
-    getURL(paste(rooturl, "/fact/system?programid=", programid, "&groupid=", groupid, sep=""))
+    getURL(paste(rooturl, "/fact/system?programid=", programid, "&groupid=", groupid, "&factname=", factname, sep=""))
   }, warning = function(w) {
     print("Warning getFactsystem")
   }, error = function(e) {
@@ -90,9 +90,9 @@ getFactsystem <- function(rooturl, programid, groupid) {
   return(fromJSON(factJSON))
 }
 
-getFactsystemDF <- function(rooturl, programid, groupid) {
+getFactsystemDF <- function(rooturl, programid, groupid, factname) {
   factJSON <- tryCatch({  
-    getURL(paste(rooturl, "/fact/system?programid=", programid, "&groupid=", groupid, sep=""))
+    getURL(paste(rooturl, "/fact/system?programid=", programid, "&groupid=", groupid, "&factname=", factname, sep=""))
   }, warning = function(w) {
     print("Warning getFactsystemDF")
   }, error = function(e) {
@@ -113,9 +113,9 @@ getFactsystemDF <- function(rooturl, programid, groupid) {
 #  return(factDF)
 }
 
-delFact <- function(rooturl, programid, groupid) {
+delFact <- function(rooturl, programid, groupid, factname) {
   result <- tryCatch({  
-    getURL(paste(rooturl, "/fact/del?programid=",programid, "&groupid=", groupid, sep=""))
+    getURL(paste(rooturl, "/fact/del?programid=",programid, "&groupid=", groupid, "&factname=", factname, sep=""))
   }, warning = function(w) {
     print("Warning delFact")
   }, error = function(e) {
@@ -128,7 +128,7 @@ delFact <- function(rooturl, programid, groupid) {
 }
 
 
-postFact <- function(rootusr, programid, groupid, userobsDF) {
+postFact <- function(rootusr, programid, groupid, factname, userobsDF) {
   for (i in 1:nrow(userobsDF)) {
     
     #JSON <- paste("{ \"programid\" :", programid, ", \"groupid\" :", groupid, ", \"facttype\" : 0", ", \"factjson\" :\"", toString(toJSON(userobsDF[i,])), "\"  }", sep="")
@@ -152,7 +152,7 @@ postFact <- function(rootusr, programid, groupid, userobsDF) {
     
     result <- tryCatch({      
       # postForm( paste(rooturl, "/fact", sep=""), .opts = curl.opts )
-      postForm( paste(rooturl, "/fact", sep=""), programid=programid, groupid=userid, factjson=factjson, style="POST"  )
+      postForm( paste(rooturl, "/fact", sep=""), programid=programid, groupid=userid, factname=factname, factjson=factjson, style="POST"  )
       # system(url)
       print(paste("Posting fact-->", factjson, sep=""))
     }, warning = function(w) {

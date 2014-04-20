@@ -10,7 +10,7 @@ imagesdir <<- "/Users/stefanopicozzi/websites/nudge/images"
 setwd(rootdir)
 ppi <<- 300
 
-source("common.R")
+source("../common/common.R")
 
 # Do programid=1 and activity observations
 programid <<- 1
@@ -28,11 +28,13 @@ for (programuser in programusers) {
    print(paste("--->INSERTOBS --", userid, sep = ""))
    source("dofitbitobs.R", echo = TRUE )
    
+   obsname <<- "activity"
+   rulename <<- "fitbit"
    print(paste("--->APPLYNUDGES --", userid, sep = ""))
-   source("dofitbitnudges.R", echo = TRUE )
+   source("../common/donudges.R", echo = TRUE )
       
    print(paste("--->PUSHNOTIFICATION :", userid, sep = ""))
-   source("dofitbitnotifications.R", echo = TRUE )
+   source("../common/donotifications.R", echo = TRUE )
    
    print(paste("--->PLOTS :", userid, sep = ""))
    source("dofitbitplots.R", echo = TRUE )

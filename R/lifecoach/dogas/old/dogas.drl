@@ -36,7 +36,7 @@ rule "ruleInsertObservation"
   then
     inSDF = new SimpleDateFormat("yyyy-M-d");
     Date date = inSDF.parse( $input.get("obsdate").toString() );
-    Observation obs = new Observation($input.get("username").toString(), date);
+    Observation obs = new Observation($input.get("id").toString(), date);
     obs.setObsvalue( Integer.parseInt($input.get("obsvalue").toString()) );
     insert(obs);
     print(drools.getRule().getName() + "->" + obs.getId() + "-" + obs.getObsdate() + "-" + obs.getObsvalue() );
@@ -46,12 +46,12 @@ rule "ruleInsertParticipant"
   salience 1000
   when
     $input : JSONObject() from entry-point DEFAULT 
-    not Participant( id == $input.get("username").toString() )
+    not Participant( id == $input.get("id") )
   then
     Date today = new Date();
     String dayofweek = new SimpleDateFormat("EE").format(today);
-    Participant $participant = new Participant( $input.get("username").toString() );
-    $participant.setGastype( $input.get("obsname").toString() );
+    Participant $participant = new Participant( $input.get("id").toString() );
+    $participant.setGastype( $input.get("gastype").toString() );
     $participant.setDayofweek(dayofweek);
     insert( $participant );
     print(drools.getRule().getName() + "->" + $participant.getId() + "-" + $participant.getGastype() );
@@ -63,19 +63,15 @@ rule "ruleBestExpectedCount"
   when
     $participant : Participant( dayofweek != "Sun" )
     $obsCountTotal : Number( intValue > 0) from accumulate(
-      Observation( $obsCount : obsvalue == 2, $participant.id == id ) over window:time( 60d ),
+      Observation( $obsCount : obsvalue == 2, $participant.id == id ) over window:time( 14d ),
       count( $obsCount ) )
   then
     Date today = new Date();
-
-    java.util.Date date = new Date();
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    String datef = sdf.format( date );
-
+    outSDF = new SimpleDateFormat("E dd MMM yyyy");
     JSONObject joutput = new JSONObject();
     joutput.put("id", $participant.getId());
     joutput.put("rulename", drools.getRule().getName());
-    joutput.put("ruledate", datef);
+    joutput.put("ruledate", today);
     joutput.put("rulemsg", "Nudge says that for " + $participant.getGastype() + " you attained your best expected outcome " + $obsCountTotal + " times in the past 14 days.");
 		joutput.put("ruledata", "http://www.satimetry.com/msg.php");
     Output $output = new Output(joutput.toString());
@@ -89,21 +85,16 @@ rule "ruleExpectedCount"
   when
     $participant : Participant( dayofweek == "Sun" )
     $obsCountTotal : Number( intValue > 0) from accumulate(
-      Observation( $obsCount : obsvalue >= 0, $participant.id == id ) over window:time( 60d ),
+      Observation( $obsCount : obsvalue >= 0, $participant.id == id ) over window:time( 14d ),
       count( $obsCount ) )
   then
     Date today = new Date();
-
-    java.util.Date date = new Date();
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    String datef = sdf.format( date );
-
+    outSDF = new SimpleDateFormat("E dd MMM yyyy");
     JSONObject joutput = new JSONObject();
     joutput.put("id", $participant.getId());
     joutput.put("rulename", drools.getRule().getName());
-    joutput.put("ruledate", datef);
-//    joutput.put("rulemsg", "Nudge says that for " + $participant.getGastype() + " you attained your expected outcome or better " + $obsCountTotal + " times in the past 60 days.");
-    joutput.put("rulemsg", "For " + $participant.getGastype() + " you expected or better " + $obsCountTotal + " times in past 60 days.");
+    joutput.put("ruledate", today);
+    joutput.put("rulemsg", "Nudge says that for " + $participant.getGastype() + " you attained your expected outcome or better " + $obsCountTotal + " times in the past 14 days.");
   	joutput.put("ruledata", "http://www.satimetry.com/msg.php");
     Output $output = new Output(joutput.toString());
     insert($output);
@@ -128,14 +119,12 @@ rule "ruleDailySurveyReminder"
     joutput.put("id", $participant.getId());
     joutput.put("rulename", drools.getRule().getName());
     joutput.put("ruledate", datef);
-//    joutput.put("rulemsg", 
-//      "Reminder to record your goal " + $participant.getGastype() + " attainment at http://www.satimetry.com/goal.php?ruletype=gaslow ." +
-//      " You have completed " +  $obsCountTotal + " self-reports over the past 5 days.");
     joutput.put("rulemsg", 
-      "Reminder to record goal " + $participant.getGastype() + " attainment at http://www.satimetry.com/goal.php?ruletype=gaslow .");
-    joutput.put("ruledata", "http://www.satimetry.com/goal.php?ruletype=gaslow");
+      "Reminder to record your goal " + $participant.getGastype() + " attainment at http://www.satimetry.com/goal.php?ruletype=gaslow ." +
+      " You have completed " +  $obsCountTotal + " self-reports over the past 5 days.");
+		joutput.put("ruledata", "http://www.satimetry.com/goal.php?ruletype=gaslow");
     Output $output = new Output(joutput.toString());
     insert($output);
-    print(drools.getRule().getName() + "->" + $participant.getId());
+    print(drools.getRule().getName() + "->" + $participant.getId() );
 end
 

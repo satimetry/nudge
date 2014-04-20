@@ -1,9 +1,9 @@
 
 DROP TABLE IF EXISTS rulefile;
 CREATE TABLE rulefile (
-id bigint(20) NOT NULL auto_increment,
-programid bigint(20) NOT NULL,
-groupid bigint(20) NOT NULL,
+id int(11) NOT NULL auto_increment,
+programid int(11) NOT NULL,
+groupid int(11) NOT NULL,
 rulename varchar(45) NOT NULL,
 ruletxt text not null,
 PRIMARY KEY (id)
@@ -11,10 +11,11 @@ PRIMARY KEY (id)
 
 DROP TABLE IF EXISTS fact;
 CREATE TABLE fact (
-id bigint(20) NOT NULL auto_increment,
-programid bigint(20) NOT NULL,
-groupid bigint(20) NOT NULL,
-facttype bigint(20) NOT NULL,
+id int(11) NOT NULL auto_increment,
+programid int(11) NOT NULL,
+groupid int(11) NOT NULL,
+factname varchar(40) NOT NULL,
+facttype int(11) NOT NULL,
 factjson varchar(256) not null,
 PRIMARY KEY (id)
 );

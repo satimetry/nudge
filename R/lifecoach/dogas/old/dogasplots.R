@@ -5,24 +5,37 @@ library("lattice")
 library("MASS")
 library(ggplot2)
 library(rjson)
+library("RMySQL")
 
-# Get observations for this programid and userid
-userobsDF <- getUserobsDF(rooturl, programid, userid, obsname)
-userobss <- getUserobs(rooturl, programid, userid, obsname)
-user <- getUser(rooturl, userid)
-username <- user['username']
-
-x <- c()
-for (i in 1:nrow(userobsDF)) {
-  x <- append(x, userobsDF[i, 'obsvalue'])   
-}
+polllist <<- c('gas11', 'gas12', 'gas21', 'gas22')
+#polllist <<- c('gas11')
+   
+for (pollname in polllist) {
+    
+  sqlStmt <- paste(
+    " SELECT pu.q01value AS x, p.polldesc AS polldesc, pu.polldate AS polldate",
+    " FROM programpolluser pu,",
+    "      poll p",
+    " WHERE pu.programid = p.programid",
+    "  AND  p.pollid = pu.pollid",
+    "  AND  p.pollname = '", pollname, "'",
+    "  AND  p.programid = ", programid,
+    "  AND  pu.userid = ", userid,
+    " ORDER BY polldate ASC",
+    sep = "")
+   
+  x <- c()
+  gasDF <- dbGetQuery(con, sqlStmt)
+  for (i in 1:nrow(gasDF)) {
+    x <- append(x, gasDF[i, 'x'])   
+  }
   
-if (length(x) > 0) {
-  polldesc <- obsname
+  if (length(x) < 1) { next }
+  polldesc <- gasDF[1,'polldesc']
       
-  dir.create(file.path( paste(imagesdir, "/lifecoach/user/", username, sep="") ), showWarnings = FALSE)
-  filenamebp = paste(imagesdir, "/lifecoach/user/", username, "/", obsname, "bp.png", sep = "")
-  filenamexy = paste(imagesdir, "/lifecoach/user/", username, "/", obsname, "xy.png", sep = "")
+  dir.create(file.path(paste(imagesdir, "/lifecoach/user/", sep=""), user), showWarnings = FALSE)
+  filenamebp = paste(imagesdir, "/lifecoach/user/", user, "/", pollname, "bp.png", sep = "")
+  filenamexy = paste(imagesdir, "/lifecoach/user/", user, "/", pollname, "xy.png", sep = "")
    
   # GAS Bar Plot
   png(filenamebp,
@@ -64,11 +77,9 @@ if (length(x) > 0) {
 
   dev.off()
 
-  obsdate <- as.POSIXct(userobsDF[, "obsdate"], format = "%Y-%m-%d %H:%M:%S")
-  obsvalue <- userobsDF[, "obsvalue"]
-  
-#   x3 <- lm(userobsDF$x ~ poly(userobsDF$polldate,3) )
-  x1 <- lm(obsvalue ~ obsdate)
+  gasDF$polldate <- as.POSIXct(gasDF$polldate, format = "%Y-%m-%d %H:%M:%S")
+#   x3 <- lm(gasDF$x ~ poly(gasDF$polldate,3) )
+  x1 <- lm(gasDF$x ~ gasDF$polldate)
    
   png(filenamexy,
     res = 72,
@@ -76,30 +87,30 @@ if (length(x) > 0) {
     height = 300,
     units = "px")
    
-  plot(obsdate, obsvalue,
+  plot(gasDF$polldate, gasDF$x,
     type = "b",
     axes = FALSE,
     ylab = "Response",
     ylim = c(-2, 2),
-    xlim = c( min(obsdate), max(obsdate) ),
+    xlim = c(min(gasDF$polldate), max(gasDF$polldate)),
     xlab = "Date",
     col = "deepskyblue1",
     main = polldesc )
    
 #   abline(x1, lwd = 2, col = "orangered")
-#   lines(predict(x3, newdata = data.frame(userobsDF$obsdate)), lwd = 3, col="gray48" )
+#   lines(predict(x3, newdata = data.frame(gasDF$polldate)), lwd = 3, col="gray48" )
   axis(2, at = seq(-2, 2, by = 1), 
     labels = c("Worst \nExpected", "Less Than \nExpected", "Expected", "More Than \nExpected", "Best \nExpected"),
     cex.axis = 0.5, las = 2)
-  axis(1, at = obsdate, labels = substr(obsdate, 6, 10), cex.axis = 0.8, las = 2)
+  axis(1, at = gasDF$polldate, labels = substr(gasDF$polldate, 6, 10), cex.axis = 0.8, las = 2)
 #   text(loc[1], loc[4], "Daily PQM Score", pos = 3, xpd = T)
 
   grid()
-#    polygon(c( min(userobsDF$polldate), min(userobsDF$polldate):max(userobsDF$polldate), max(userobsDF$polldate) ), c(0, userobsDF$x, 0), col = "deepskyblue1", border = NA)
+#    polygon(c( min(gasDF$polldate), min(gasDF$polldate):max(gasDF$polldate), max(gasDF$polldate) ), c(0, gasDF$x, 0), col = "deepskyblue1", border = NA)
     
   loc <- par("usr")
   box()
   dev.off()   
-
+   
 }
 
