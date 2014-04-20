@@ -44,6 +44,10 @@
                   <label for="groupid"> Group ID: </label>
                   <input type="text" name="groupid" id="groupid" required value=7 />
                </div>
+               <div data-role="fieldcontain">
+                  <label for="factname"> Fact Name: </label>
+                  <input type="text" name="factname" id="factname" required value="activity" />
+               </div>
             </fieldset>
             
             <center>
@@ -65,9 +69,13 @@
                <label for="groupid"> Group ID: </label>
                <input type="text" name="groupid" id="groupid" required value=7 />
             </div>
+            <div data-role="fieldcontain">
+               <label for="factname"> Fact Name: </label>
+               <input type="text" name="factname" id="factname" required value="activity" />
+            </div>
             <div data-role="fieldcontain">            
                <label for="rulename"> Rule Name: </label>
-               <input type="text" name="rulename" id="rulename" required value="donudgeapi" />
+               <input type="text" name="rulename" id="rulename" required value="activity" />
             </div>
          </fieldset>
         
@@ -89,6 +97,10 @@
                <label for="groupid"> Group ID: </label>
                <input type="text" name="groupid" id="groupid" required value=7 />
             </div>
+            <div data-role="fieldcontain">
+               <label for="factname"> Fact Name: </label>
+               <input type="text" name="factname" id="factname" required value="activity" />
+            </div>
          </fieldset>
         
         <center>
@@ -108,6 +120,10 @@
             <div data-role="fieldcontain">
                <label for="groupid"> Group ID: </label>
                <input type="text" name="groupid" id="groupid" required value=7 />
+            </div>
+            <div data-role="fieldcontain">
+               <label for="factname"> Fact Name: </label>
+               <input type="text" name="factname" id="factname" required value="activity" />
             </div>
             <div data-role="fieldcontain">
                <label for="factjson"> Fact JSON: </label>
@@ -134,6 +150,10 @@
             <div data-role="fieldcontain">
                <label for="groupid"> Group ID: </label>
                <input type="text" name="groupid" id="groupid" required value=7 />
+            </div>
+            <div data-role="fieldcontain">
+               <label for="factname"> Fact Name: </label>
+               <input type="text" name="factname" id="factname" required value="activity" />
             </div>
       </fieldset>
       
@@ -173,11 +193,12 @@
             </div>
             <div data-role="fieldcontain">  
                <label for="rulenameid">  Rule Name: </label>
-               <input type="text" name="rulename" id="rulename" required value="donudgeapi" />
+               <input type="text" name="rulename" id="rulename" required value="activity" />
             </div>
             <div data-role="fieldcontain">  
                <label for="ruletxt">  Rule Text: </label>
                <textarea cols=60 rows=20 name="ruletxt" id="ruletxt" required >
+
 import java.util.HashMap;
 import org.json.JSONObject;
 import java.util.Date; 
@@ -240,7 +261,7 @@ rule "ruleInsertParticipant"
   salience 1000
   when
     $input : JSONObject() from entry-point DEFAULT 
-    not Participant( id == $input.get("username") )
+    not Participant( id == $input.get("username").toString() )
   then
     Date today = new Date();
     String dayofweek = new SimpleDateFormat("EE").format(today);
@@ -287,7 +308,7 @@ rule "ruleAverageStepCount"
       joutput.put("ruledate", today);      
       joutput.put("rulemsg", "Nudge says that you averaged " + 
          String.format("%.2f", $stepCountAverage) + 
-         " steps per day over the last 10 days");
+         " steps per day over the last 7 days");
       joutput.put("ruledata", $stepCountAverage);
       Output $output = new Output(joutput.toString());
       insert($output);
