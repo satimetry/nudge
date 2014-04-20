@@ -3,10 +3,10 @@
 # Batch control script
 Sys.setenv(NOAWT = "true")
 
-rooturl <<- "http://localhost:8080/tnm/rest"
-#rooturl <<- "http://nudgeserver-spicozzi.rhcloud.com/tnm/rest"
+#rooturl <<- "http://localhost:8080/tnm/rest"
+rooturl <<- "http://nudgeserver-spicozzi.rhcloud.com/tnm/rest"
 rootdir <<- "/Users/stefanopicozzi/websites/nudge/R/lifecoach/dofitbit"
-imagesdir <<- "/Users/stefanopicozzi/websites/nudge/php/images"
+imagesdir <<- "/Users/stefanopicozzi/websites/nudge/images"
 setwd(rootdir)
 ppi <<- 300
 

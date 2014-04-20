@@ -8,8 +8,7 @@ pushoveruser <- user['pushoveruser']
 msgs <- getMsg(rooturl, programid, userid)
 for (msg in msgs) {
    msgtxt <- paste(msg["msgtxt"], ". To opt-out from nudges visit: ", "http://www.satimetry.com/rulesettings.php", sep = "")       
-   # getPushover(pushoveruser, msgtxt)
-   print(msgtxt)
+   sendPushover(pushoveruser, msgtxt)
    # Set issent for this msgid
-   setMsgissent(rooturl, msgid=msgDF[i, "msgid"]) 
+   setMsgissent(rooturl, msgid=msg["msgid"]) 
 }

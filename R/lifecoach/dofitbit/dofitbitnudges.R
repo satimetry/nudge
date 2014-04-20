@@ -2,9 +2,9 @@
 Sys.setenv(NOAWT = "true")
 
 library(rjson)
-library("Rdrools6")
-ls("package:Rdrools6", all = TRUE)
-lsf.str("package:Rdrools6", all = TRUE)
+#library("Rdrools6")
+#ls("package:Rdrools6", all = TRUE)
+#lsf.str("package:Rdrools6", all = TRUE)
 
 # Get observations for this programid and userid
 userobsDF <- getUserobsDF(rooturl, programid, userid, "activity")
