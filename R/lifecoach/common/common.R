@@ -222,7 +222,7 @@ getRule <- function(rooturl, rulename) {
   ruleJSON <- tryCatch({  
     getURL(paste(rooturl, "/rule?rulename=", rulename, sep=""))
   }, warning = function(w) {
-    print("Warning")
+    print("Warning getRule")
   }, error = function(e) {
     print("Error getRule")
     message(e)
