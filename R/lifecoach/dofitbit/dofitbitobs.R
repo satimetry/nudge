@@ -19,7 +19,7 @@ if ( ! is.na(fitbitkey) ) {
    access_url = "http://api.fitbit.com/oauth/access_token"
    auth_url = "http://www.fitbit.com/oauth/authorize"
 
-   fbr = oauth_app(appname, fitbitkey, fitbitsecret)
+   fbr = oauth_app(fitbitappname, fitbitkey, fitbitsecret)
    fitbit = oauth_endpoint(token_url, auth_url, access_url)
    #token = oauth1.0_token(fitbit,fbr)
    #sig = sign_oauth1.0(fbr, token=token$oauth_token, token_secret=token$oauth_token_secret)
