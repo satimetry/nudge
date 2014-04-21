@@ -34,10 +34,10 @@ if ( ! is.na(fitbitkey) ) {
    weightJSON <- tryCatch({
       GET(getURL, sig)
    }, warning = function(w) {
-      print("Warning")
+      print("Warning weight")
       stop()
    }, error = function(e) {
-      print("Error")
+      print("Error weight")
       stop()
    }, finally = {
    })
@@ -52,10 +52,10 @@ if ( ! is.na(fitbitkey) ) {
    stepsJSON <- tryCatch({
       GET(getURL, sig)
    }, warning = function(w) {
-      print("Warning")
+      print("Warning steps")
       stop()
    }, error = function(e) {
-      print("Error")
+      print("Error steps")
       stop()
    }, finally = {
    })
