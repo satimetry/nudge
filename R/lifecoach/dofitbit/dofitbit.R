@@ -14,7 +14,6 @@ source("../common/common.R")
 
 # Do programid=1 and activity observations
 programid <<- 1
-obsname <<- 'activity'
 
 # Get programusers enrolled for this programid
 programusers <- getProgramuser(rooturl, programid)
@@ -29,7 +28,7 @@ for (programuser in programusers) {
    source("dofitbitobs.R", echo = TRUE )
    
    obsname <<- "activity"
-   rulename <<- "fitbit"
+   rulename <<- "activity"
    print(paste("--->APPLYNUDGES --", userid, sep = ""))
    source("../common/donudges.R", echo = TRUE )
       

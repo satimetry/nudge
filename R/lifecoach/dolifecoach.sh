@@ -29,19 +29,12 @@ else
 fi
 
 cd ~/websites/nudge/R/lifecoach
-echo "Launch database port forwarding ..."
-nohup rhc port-forward nudgeserver -p Dopamine@1 > nohup.log 2>&1&
-echo $! > pid.txt
-sleep 45
 
 echo "Do GAS ..."
 ./dogas/dogas.R
 ./dofitbit/dofitbit.R
 
-echo "Stop database port forwarding ..."
-kill -9 `cat pid.txt`
-
 cd ~/websites/nudge
 git add . --all
-git commit -m "X"
+git commit -am "dolifecoach batch script"
 git push
