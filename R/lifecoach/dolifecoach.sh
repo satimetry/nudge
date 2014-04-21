@@ -5,8 +5,6 @@
 # app: nudge
 # alias: www.satimetry.com
 
-cp ~/.openshift/redhat-express.conf ~/.openshift/express.conf
-
 echo "Show domain status ..."
 rhc domain show -p Dopamine@1
 
@@ -27,6 +25,9 @@ if [ $server != 1 ]; then
 else
   echo "Nudge Server Application is started"
 fi
+
+cd ~/websites/nudge
+git pull
 
 cd ~/websites/nudge/R/lifecoach
 
