@@ -1,0 +1,130 @@
+
+.ui-icon-refresh {
+   -moz-border-radius:0px;
+   -webkit-border-radius:0px;
+   border-radius:0px;
+   width:12px;
+   height:12px;
+   margin-top:2px;/*Adjust this value to position the icon*/
+}
+
+img {
+    position:absolute;
+    top:0;
+    bottom:0;
+    margin:auto;
+}
+
+.ui-li-thumb, .ui-li-icon {
+    left: 5px;
+    max-height: 40px; 
+    max-width: 40px;
+    position: absolute;
+    top: 0;
+}
+
+.ui-li-thumbsmall, .ui-li-iconsmall {
+    left: 5px;
+    max-height: 20px; 
+    max-width: 20px;
+    position: absolute;
+    top: 0;
+    !important;
+}
+
+.my_icon_wrapper {
+        float: left;
+        width: 80px; height: 80px;
+        text-align: center;
+        vertical-align: middle;
+}
+
+ 
+div.ui-input-text { width: 275px !important }
+div.ui-select { width: 275px !important }
+div.ui-radio { width: 275px !important }
+#div.ui-option { width: 275px !important }
+
+#div.ui-btn { width: 200px !important; }
+
+.ui-content {
+    padding-top: 0px;
+}
+
+        
+.ui-overlay-d {background: #333;}
+
+   @media only screen and (min-width: 64.1em){
+        .ui-page{
+            width: 45em !important;
+            margin: 0 auto !important;
+            position: relative !important;
+            border-right: 0.3em #666 outset !important;
+            border-left: 0.3em #666 outset !important;
+        }
+   .ui-overlay-d{
+      background: #333;
+   }
+    }    
+
+.ui-li .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li {
+    display: block !important;
+    padding: 0.9em 75px 0.9em 15px !important;
+}
+div.ui-slider-switch {
+    position: absolute !important;
+    right: 0 !important;
+    width: 44% !important;
+}
+
+.ui-li-thumb, .ui-li-icon {
+    left: 1px;
+    max-height: 80px; <-- height
+    max-width: 80px; <-- width
+    position: absolute;
+    top: 0;
+}
+
+<style>
+  p {
+    color: grey;
+  }
+  .smallparagraph {
+    font-size: 15px;
+    font-weight:bold;
+  }
+  .verysmallparagraph {
+    font-size: 9px;
+  }
+</style>
+
+<style>
+h6 {
+   font-size:14px !important;
+   line-height:12px !important;
+}
+</style>
+
+/* stack all grids below 40em (640px) */
+@media all and (max-width: 35em) {
+   .my-breakpoint .ui-block-a, 
+   .my-breakpoint .ui-block-b, 
+   .my-breakpoint .ui-block-c,
+   .my-breakpoint .ui-block-d,
+   .my-breakpoint .ui-block-e { 
+      width: 100%; 
+      float:none; 
+   }
+}
+
+div.ui-slider-switch { width: 7em !important}
+
+
+
+@media all and (min-width: 75em) {
+   .my-breakpoint.ui-grid-b .ui-block-a { width: 49.95%; }
+   .my-breakpoint.ui-grid-b .ui-block-b, 
+   .my-breakpoint.ui-grid-b .ui-block-c { width: 24.925%; }
+   .my-breakpoint.ui-grid-b .ui-block-a { clear: left; }
+   }
+}

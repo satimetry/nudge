@@ -1,0 +1,128 @@
+
+Surveys
+- load tool to populate polls by program for pollq
+- reconsider pollq having programid
+
+GAS
+- load tool to build gas rules
+
+Tagging
+- concept of using rules to tag user created content
+- e.g. top link diary and obs entries to goals
+
+
+Data Download Rule
+- add feature that user can request data download, via opt-in/out
+- if opt-in appears as links that appears in Resources Link screen, something to obfuscate username
+- clicking link triggers building CSV file with all user data
+=> need to add feature as "data-download" rule link to rule and programrule/user 
+
+
+BQL
+Build mock example of practitioner creating a dynamic BQL query
+Use select, radio, drop downs for EQUALS, GREATER THAN, choose observation
+slide for time window etc
+
+Poll
+add pollname drop down list to rule creation if ruletype=poll
+
+currenlt only 10 questions per poll, what about dpanas with 14 q?
+Ensure no quote marks in questions text, edit openshift database for poll=11
+Add poll list page to Architect function
+- can apply instant poll to all on click button
+- other button steps thru poll without saving to show poll
+
+
+Rules
+for time windoe rules add date day modulo check
+to avoid doing daily, e.g. dayno mod 5 = 0 then ...
+
+TODO ...
+1. add msgid to programurl
+2. change ruleManual type to 'program'
+3. git push latest code
+
+need to change rulename in msg to ruleid instead
+
+For surveys
+1)
+... add a nother field to msg to assopciated programurlid back to msh record
+so users see only their surveys, e.g. add msgid to programurl table
+2)
+reformat programurl to make select cases clearer
+
+Batch processing behavior treated and crontolled like a rule - like everything else
+
+Create implementation for batch processing rules, e.g. sysBatchProc rule drives R script that
+automates running the fitbit.R scripts
+
+Manage the batch processing using an R script that operates in a continuous loop?? - as opposed to e.g.
+Mac OS/X launchd and launchctl
+
+configurable userobs types
+
+
+Configure openground sample data set
+
+Host using thenudgemachine.com alias from openshift
+
+Add programruleuser INSERT to register_submit section
+- see also add function for architect
+-- requires query against rule table to create list of programrules not yet inserted
+-- user clicks rule and that triggers new insert to programrule table
+--> need programrule page
+
+Add simple likert survey mechanism based on study1 prototype
+      
+Add site statistics chart to program charts
+
+Add programrule Add function for architect
+add programurl Add for architect as plus icon in Link screen
+DONE - add if test around role in header
+
+Bugs
+- user charts number shows static result even if user has no charts existing
+- login as PR63 for fit program and inspect user Chart as example
+
+Help
+for each page
+Application/Benefit
+- help triage those most in need to optimise direction of resources
+- explain roles
+- minimum requirement, purpose, goal, measurable behaviour
+
+User
+
+Architect
+-- add user list screen for participants in architect's program
+-- add searchable rule list for architect to review all nudges for his participants
+-- add searchable user chart list, see all user's charts
+
+Notifications
+- Need to add page refresh so that popup works properly ?? see msg popup show <var> unresolved
+- Add unread message count to home page - need table which is updated on click to read ...
+- write value to js global variable
+- add msg count to programuser
+- calculate by update programuser table when user logs in, then set SESSION var to equiv js variable using <script>
+
+Help Secreen
+
+Footer
+- See Header for how to set pretty left/middle/right sections using grids?
+
+System
+- Add site metering graph using R, add to charts program level
+IN PROGRESS
+
+
+Rule
+- add types to rule
+- user create rules for goals
+- add separate rule configuration page
+OK
+- add _group_ rules as example of program specific group results
+e.g. ruleNoOfUserBelowMin
+
+Notifications
+- rule for adding new content that includes link use Forbes example, example set up
+OK
